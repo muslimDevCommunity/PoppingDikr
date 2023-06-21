@@ -44,18 +44,16 @@ std::string Dikr_list_en[3] = {
 
 
 /*  word in hex format for Arabic
-#define _Allah \uFEEA\uFEE0\uFEDF\uFE8D
-#define _Ilaha \uFEEA\uFEDFإ
-#define _Mohammed \uFEAA\uFEE4\uFEA4\uFEE3
-
-#define _Bismi \uFEE2\uFEB4\uFE91
-#define _Sub7an \uFEE6\uFEA4\uFE92\uFEB3
-#define _Astaghfiro \uFEAE\uFED4\uFED0\uFE98\uFEB3أ
-
-#define _salla \uFEF0\uFEE0\uFEBB
-#define _ala \uFEF0\uFEE0\uFECB
-#define _la ﻼ
-#define _illa لاإ
+_Allah \uFEEA\uFEE0\uFEDF\uFE8D
+_Ilaha \uFEEA\uFEDFإ
+_Mohammed \uFEAA\uFEE4\uFEA4\uFEE3
+_Bismi \uFEE2\uFEB4\uFE91
+_Sub7an \uFEE6\uFEA4\uFE92\uFEB3
+_Astaghfiro \uFEAE\uFED4\uFED0\uFE98\uFEB3أ
+_salla \uFEF0\uFEE0\uFEBB
+_ala \uFEF0\uFEE0\uFECB
+_la ﻼ
+_illa لاإ
 */
 
 std::string Dikr_list_ar[5] = {
