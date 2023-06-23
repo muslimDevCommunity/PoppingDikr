@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-//#include <filesystem>
+#include <filesystem>
 #include <unistd.h>
 
 int cooldown_minutes = 0;
@@ -173,7 +173,6 @@ void read_settings(){
 
 void write_settings()
 {
-  std::cout << Settings_path << std::endl;
   std::ofstream SettingsFile;
   SettingsFile.open(Settings_path.c_str());
 
@@ -195,11 +194,11 @@ void get_settings_path()
   std::string path = "/home/";
   path.append(getlogin());
 
-  /*
+  
   std::string Settings_dir = path;
-  Settings_dir.append(".PoppingDikr/");
+  Settings_dir.append("/.PoppingDikr");
   std::filesystem::create_directory(Settings_dir.c_str());
-  */
+  
 
   path.append("/.PoppingDikr/Settings");
   Settings_path = path;

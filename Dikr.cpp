@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 
-//#include <filesystem>
+#include <filesystem>
 #include <fstream>
 #include <unistd.h>
 
@@ -241,11 +241,9 @@ void get_settings_path()
   std::string path = "/home/";
   path.append(getlogin());
 
-  /*
   std::string Settings_dir = path;
-  Settings_dir.append(".PoppingDikr");
+  Settings_dir.append("/.PoppingDikr");
   std::filesystem::create_directory(Settings_dir.c_str());
-  */
 
   path.append("/.PoppingDikr/Settings");
   Settings_path = path;
