@@ -2,11 +2,16 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
-#include <string>
+
+#include <stdio.h>
+
+#include <filesystem>
 #include <fstream>
+#include <unistd.h>
 
 //
 bool running = true;
+std::string Settings_path;
 
 // window variables
 int cooldown_minutes = 1;
@@ -36,12 +41,6 @@ const char* Dikr_font_arr_ar[3] = {
 // "/usr/share/fonts/truetype/kacst/KacstPoster.ttf"
 };
 
-std::string Dikr_list_en[3] = {
-  "BismiALlah",
-  "Sub7ana Allah",
-  "Allah Akbar"
-};
-
 
 /*  word in hex format for Arabic
 _Allah \uFEEA\uFEE0\uFEDF\uFE8D
@@ -65,6 +64,7 @@ std::string Dikr_list_ar[5] = {
 };
 
 void initialize();
+void get_settings_path();
 void load_settings();
 void load_font();
 void make_Dikr_texture();
@@ -110,6 +110,7 @@ void initialize(){
     screen_heigth = DM.h;
     screen_width = DM.w;
 
+    get_settings_path();
     load_settings();
     srand(time(NULL));
 }
@@ -203,7 +204,7 @@ void make_Dikr_texture()
 
 void load_settings(){
   std::ifstream SettingsFile;
-  SettingsFile.open("files/Settings", std::ifstream::in);
+  SettingsFile.open(Settings_path.c_str(), std::ifstream::in);
   if(SettingsFile.is_open())
   {
     int f_cooldown_time = cooldown_minutes;
@@ -229,4 +230,22 @@ void load_settings(){
     }
     SettingsFile.close();
   }
+  else
+  {
+    printf("Allah Akbar:Error loading settings\n");
+  }
 }
+
+void get_settings_path()
+{
+  std::string path = "/home/";
+  path.append(getlogin());
+
+  std::string Settings_dir = path;
+  Settings_dir.append("/.PoppingDikr");
+  std::filesystem::create_directory(Settings_dir.c_str());
+
+  path.append("/.PoppingDikr/Settings");
+  Settings_path = path;
+}
+
