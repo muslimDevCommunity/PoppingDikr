@@ -4,15 +4,21 @@
 #include <fstream>
 
 #include <iostream>
-#include <filesystem>
+
+//#include <filesystem>
+#include <unistd.h>
 
 int cooldown_minutes = 0;
+
+std::string Settings_path;
 
 float BG_color[3] = {0,0,0};
 float Dikr_color[3] = {0,0,0};
 
 bool error_loading_settings = false;
 
+void init();
+void get_settings_path();
 void read_settings();
 void write_settings();
 void show_settings();
@@ -56,7 +62,7 @@ int main()
 
     ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
 
-    read_settings();
+    init();
 
     // Main loop
     bool done = false;
@@ -132,7 +138,7 @@ void show_settings()
 
 void read_settings(){
   std::ifstream SettingsFile;
-  SettingsFile.open("files/Settings", std::ifstream::in);
+  SettingsFile.open(Settings_path.c_str(), std::ifstream::in);
   if(SettingsFile.is_open())
   {
     int f_cooldown_time = cooldown_minutes;
@@ -167,8 +173,9 @@ void read_settings(){
 
 void write_settings()
 {
+  std::cout << Settings_path << std::endl;
   std::ofstream SettingsFile;
-  SettingsFile.open("files/Settings");
+  SettingsFile.open(Settings_path.c_str());
 
   SettingsFile << cooldown_minutes << '\n';
   SettingsFile << int(BG_color[0] * 255) << ' ' << int(BG_color[1] * 255) << ' ' << int(BG_color[2] * 255) << '\n';
@@ -177,3 +184,23 @@ void write_settings()
 
 }
 
+void init()
+{
+  get_settings_path();
+  read_settings();
+}
+
+void get_settings_path()
+{
+  std::string path = "/home/";
+  path.append(getlogin());
+
+  /*
+  std::string Settings_dir = path;
+  Settings_dir.append(".PoppingDikr/");
+  std::filesystem::create_directory(Settings_dir.c_str());
+  */
+
+  path.append("/.PoppingDikr/Settings");
+  Settings_path = path;
+}
