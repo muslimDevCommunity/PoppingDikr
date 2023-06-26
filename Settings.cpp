@@ -1,5 +1,6 @@
 //بسم الله الرحمن الرحيم
 
+#include <SDL_ttf.h>
 #include "imgui_SDL_includes.h"
 #include <fstream>
 
@@ -14,14 +15,28 @@ std::string Settings_path;
 
 float BG_color[3] = {0,0,0};
 float Dikr_color[3] = {0,0,0};
+const char* Dikr_Preview = u8"\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ"; //La ilaha Illa Allah
+
+TTF_Font* Dikr_font = nullptr;
+SDL_Texture* Preview_Texture = nullptr;
+
 
 bool error_loading_settings = false;
 
+const char* Dikr_font_arr[3] = {
+  "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
+  "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
+  "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
+};
+
 void init();
 void get_settings_path();
+void load_font();
 void read_settings();
 void write_settings();
 void show_settings();
+void RenderPreview(SDL_Renderer* renderer);
+void frame_cleenup();
 
 // Main code
 int main()
@@ -34,14 +49,19 @@ int main()
         return -1;
     }
 
+    if(TTF_Init() == -1)
+    {
+        printf("Error: %s\n", TTF_GetError());
+        return -1;
+    }
     // From 2.0.18: Enable native IME.
 #ifdef SDL_HINT_IME_SHOW_UI
     SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 #endif
 
     // Create window with SDL_Renderer graphics context
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    SDL_Window* window = SDL_CreateWindow("BismiAllah PoppingDikr Settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI);
+    SDL_Window* window = SDL_CreateWindow("BismiAllah PoppingDikr Settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, window_flags);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr)
     {
@@ -60,13 +80,14 @@ int main()
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer_Init(renderer);
 
-    ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
+    ImVec4 clear_color = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
 
     init();
 
     // Main loop
     bool done = false;
-    while (!done){
+    while (!done)
+    {
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -89,9 +110,11 @@ int main()
         SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
         SDL_SetRenderDrawColor(renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
         SDL_RenderClear(renderer);
+        RenderPreview(renderer);
         
         ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
         SDL_RenderPresent(renderer);
+        frame_cleenup();
     }
 
     // Cleanup
@@ -110,7 +133,9 @@ int main()
 void show_settings()
 {
   ImGui::SetNextWindowPos(ImVec2{0, 0});
-  ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar);
+  ImGui::SetNextWindowSize(ImVec2{800, 200});
+
+  ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground);
   
 
   ImGui::SliderInt("cooldown minutes", &cooldown_minutes, 1 ,60);
@@ -120,7 +145,7 @@ void show_settings()
 
   if(error_loading_settings)
   {
-    ImGui::TextColored(ImVec4(1, 1, 0, 1) ,"error reading files!");
+    ImGui::TextColored(ImVec4(1, 1, 0, 1) ,"error reading files!\ntry save and then reload settings :)\nmay Allah bless you");
   }
 
   if(ImGui::Button("reload settings"))
@@ -187,6 +212,7 @@ void init()
 {
   get_settings_path();
   read_settings();
+  load_font();
 }
 
 void get_settings_path()
@@ -198,8 +224,59 @@ void get_settings_path()
   std::string Settings_dir = path;
   Settings_dir.append("/.PoppingDikr");
   std::filesystem::create_directory(Settings_dir.c_str());
-  
+
 
   path.append("/.PoppingDikr/Settings");
   Settings_path = path;
 }
+
+void RenderPreview(SDL_Renderer* renderer)
+{
+  if (NULL == Dikr_font)
+  {
+    printf("Allah Akbar: Dikr Font in NULL\n");
+    load_font();
+  }
+
+  SDL_Rect preview_rect = SDL_Rect{550, 540, 250, 60};
+  SDL_Color Preview_Dikr_Color = SDL_Color{(Uint8)(Dikr_color[0] * 255.0f), (Uint8)(Dikr_color[1] * 255.0f), (Uint8)(Dikr_color[2] * 255.0f)};
+  
+  //Make Preview Texture
+  SDL_Surface * Dikr_Surface = TTF_RenderUTF8_Solid(Dikr_font, Dikr_Preview, Preview_Dikr_Color);
+  Preview_Texture = SDL_CreateTextureFromSurface(renderer, Dikr_Surface);
+
+  if (nullptr == Dikr_Surface)
+  {
+    printf("Allah Akbar: Dikr_Surface is nullptr\n");
+  }
+  if (nullptr == Preview_Texture)
+  {
+    printf("Allah Akbar: Preview_Texture is NULL\n");
+  }
+
+  SDL_FreeSurface(Dikr_Surface);
+
+  //Render Dikr Preview
+  SDL_SetRenderDrawColor(renderer, (Uint8)(BG_color[0] * 255.0f), (Uint8)(BG_color[1] * 255.0f), (Uint8)(BG_color[2] * 255.0f), 255);
+  SDL_RenderFillRect(renderer, &preview_rect);
+  SDL_RenderCopy(renderer, Preview_Texture, NULL, &preview_rect);
+}
+
+void load_font()
+{
+  for (int i = 0; i < 3; i++) 
+  {
+    Dikr_font = TTF_OpenFont(Dikr_font_arr[i] ,60);
+    if (NULL != Dikr_font)
+    {
+      return;
+    }
+    printf("Allah Akbar: Error loading font: %s\n", Dikr_font_arr[i]);
+  }
+}
+
+void frame_cleenup()
+{
+  SDL_DestroyTexture(Preview_Texture);
+}
+
