@@ -34,11 +34,8 @@ short selected_Dikr = 0;
 
 const char* Dikr_font_arr_ar[3] = {
   "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
-  "KacstPoster.ttf",
-  "files/KacstPoster.ttf"
-// "/usr/share/fonts/truetype/ubuntu/UbuntuMono-RI.ttf"
-// "/home/ibrahimo/Downloads/Noto_Sans_Arabic/NotoSansArabic-VariableFont_wdth,wght.ttf"
-// "/usr/share/fonts/truetype/kacst/KacstPoster.ttf"
+  "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
+  "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
 };
 
 

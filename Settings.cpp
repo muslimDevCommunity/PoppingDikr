@@ -29,11 +29,13 @@ const char* Dikr_font_arr[3] = {
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
 };
 
+
 void init();
 void get_settings_path();
 void load_font();
 void read_settings();
 void write_settings();
+void make_app_run_on_boot();
 void show_settings();
 void RenderPreview(SDL_Renderer* renderer);
 void frame_cleenup();
@@ -138,7 +140,7 @@ void show_settings()
   ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground);
   
 
-  ImGui::SliderInt("cooldown minutes", &cooldown_minutes, 1 ,60);
+  ImGui::SliderInt("cooldown minutes", &cooldown_minutes, 1 ,120);
 
   ImGui::ColorEdit3("Background Color", BG_color);
   ImGui::ColorEdit3("Dikr Color", Dikr_color);
@@ -156,6 +158,11 @@ void show_settings()
   if(ImGui::Button("save"))
   {
     write_settings();
+  }
+
+  if(ImGui::Button("Make it run on boot"))
+  {
+    make_app_run_on_boot();
   }
 
   ImGui::End();
@@ -278,5 +285,25 @@ void load_font()
 void frame_cleenup()
 {
   SDL_DestroyTexture(Preview_Texture);
+}
+
+void make_app_run_on_boot()
+{
+  const char* dot_desktop_content = "[Desktop Entry]\n"
+  "Version=1.0\n"
+  "Type=Application\n"
+  "Terminal=false\n"
+  "Exec=/usr/bin/popping-dikr\n"
+  "Name=Popping Dikr\n";
+  
+  std::string path = "/home/";
+  path.append(getlogin());
+
+  path.append("/.config/autostart/PoppingDikr.desktop");
+
+  std::ofstream dot_desktop_file;
+  dot_desktop_file.open(path.c_str());
+  dot_desktop_file << dot_desktop_content;
+
 }
 

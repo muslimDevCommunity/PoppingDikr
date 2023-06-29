@@ -8,7 +8,7 @@ sdl_dep = [
     dependency('sdl2_ttf')
 ]
 
-executable('PoppingDikr',
+executable('popping-dikr',
             'Dikr.cpp',
             dependencies: sdl_dep)
 
@@ -21,7 +21,7 @@ sdl_imgui_files = [
         'thirdparty/imgui/imgui_impl_sdl2.cpp',
         'thirdparty/imgui/imgui_impl_sdlrenderer.cpp']
 
-executable('PoppingDikr-Settings',
+executable('popping-dikr-settings',
         ['Settings.cpp', sdl_imgui_files],
         dependencies: sdl_dep)
 
