@@ -13,6 +13,7 @@ int cooldown_minutes = 0;
 
 std::string Settings_path;
 
+int w_width = 480, w_height = 400;
 float BG_color[3] = {0,0,0};
 float Dikr_color[3] = {0,0,0};
 const char* Dikr_Preview = u8"\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ"; //La ilaha Illa Allah
@@ -31,6 +32,7 @@ const char* Dikr_font_arr[3] = {
 
 
 void init();
+void set_theme();
 void get_settings_path();
 void load_font();
 void read_settings();
@@ -63,7 +65,7 @@ int main()
 
     // Create window with SDL_Renderer graphics context
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI);
-    SDL_Window* window = SDL_CreateWindow("BismiAllah PoppingDikr Settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, window_flags);
+    SDL_Window* window = SDL_CreateWindow("BismiAllah PoppingDikr Settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w_width, w_height, window_flags);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr)
     {
@@ -131,11 +133,10 @@ int main()
     return 0;
 }
 
-
 void show_settings()
 {
   ImGui::SetNextWindowPos(ImVec2{0, 0});
-  ImGui::SetNextWindowSize(ImVec2{800, 200});
+  ImGui::SetNextWindowSize(ImVec2{(float)(w_width), (float)(w_height)});
 
   ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground);
   
@@ -220,6 +221,22 @@ void init()
   get_settings_path();
   read_settings();
   load_font();
+  set_theme();
+}
+
+void set_theme()
+{
+  ImGuiStyle& style = ImGui::GetStyle();
+  style.FrameRounding = 9.0f;
+
+  style.FramePadding = ImVec2(5, 5);
+  style.FrameRounding = 2.0f;
+
+  style.ItemSpacing = ImVec2(04, 06);
+  style.ItemInnerSpacing = ImVec2(12, 6);
+
+  style.GrabMinSize = 9.0f;
+  style.GrabRounding = 2.0f;
 }
 
 void get_settings_path()
@@ -245,7 +262,7 @@ void RenderPreview(SDL_Renderer* renderer)
     load_font();
   }
 
-  SDL_Rect preview_rect = SDL_Rect{550, 540, 250, 60};
+  SDL_Rect preview_rect = SDL_Rect{(w_width / 2) - 125, w_height - 90, 250, 60};
   SDL_Color Preview_Dikr_Color = SDL_Color{(Uint8)(Dikr_color[0] * 255.0f), (Uint8)(Dikr_color[1] * 255.0f), (Uint8)(Dikr_color[2] * 255.0f)};
   
   //Make Preview Texture
