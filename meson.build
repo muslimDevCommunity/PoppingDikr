@@ -25,7 +25,4 @@ executable('popping-dikr-settings',
         ['Settings.cpp', sdl_imgui_files],
         dependencies: sdl_dep)
 
-Settings_files = [
-    'settings_exe/main.cpp'
-]
 
