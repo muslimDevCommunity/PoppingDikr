@@ -5,9 +5,13 @@
 #include <fstream>
 
 #include <iostream>
+#include <vector>
 
 #include <filesystem>
+
+//#ifdef __linux__
 #include <unistd.h>
+//#endif
 
 int cooldown_minutes = 0;
 
@@ -24,7 +28,7 @@ SDL_Texture* Preview_Texture = nullptr;
 
 bool error_loading_settings = false;
 
-const char* Dikr_font_arr[3] = {
+std::vector<std::string> Dikr_font_vec = {
   "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
   "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
@@ -139,32 +143,57 @@ void show_settings()
   ImGui::SetNextWindowSize(ImVec2{(float)(w_width), (float)(w_height)});
 
   ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground);
-  
-
-  ImGui::SliderInt("cooldown minutes", &cooldown_minutes, 1 ,120);
-
-  ImGui::ColorEdit3("Background Color", BG_color);
-  ImGui::ColorEdit3("Dikr Color", Dikr_color);
-
-  if(error_loading_settings)
+  if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
   {
-    ImGui::TextColored(ImVec4(1, 1, 0, 1) ,"error reading files!\ntry save and then reload settings :)\nmay Allah bless you");
-  }
+    if(ImGui::BeginTabItem("general"))
+    {
+      ImGui::SliderInt("cooldown minutes", &cooldown_minutes, 1 ,120);
 
-  if(ImGui::Button("reload settings"))
-  {
-    read_settings();
-  }
+      ImGui::ColorEdit3("Background Color", BG_color);
+      ImGui::ColorEdit3("Dikr Color", Dikr_color);
 
-  if(ImGui::Button("save"))
-  {
-    write_settings();
-  }
+      if(error_loading_settings)
+      {
+        ImGui::TextColored(ImVec4(1, 1, 0, 1) ,"error reading files!\ntry save and then reload settings :)\nmay Allah bless you");
+      }
 
-  if(ImGui::Button("Make it run on boot"))
-  {
-    make_app_run_on_boot();
-  }
+      if(ImGui::Button("reload settings"))
+      {
+        read_settings();
+      }
+
+      if(ImGui::Button("save"))
+      {
+        write_settings();
+      }
+
+      if(ImGui::Button("Make it run on boot"))
+      {
+        make_app_run_on_boot();
+      }
+      ImGui::EndTabItem();
+    }
+    
+    if(ImGui::BeginTabItem("fonts"))
+    {
+      for(int i = 0; i < Dikr_font_vec.size(); i++)
+      {
+        if(ImGui::Button(Dikr_font_vec[i].data()))
+        {
+          std::cout << "Incha2Allah will select ffont: " << Dikr_font_vec[0] << '\n';
+        }
+      }
+
+      ImGui::EndTabItem();
+    }
+
+    if(ImGui::BeginTabItem("Window"))
+    {
+      ImGui::EndTabItem();
+    }
+
+    ImGui::EndTabBar();
+  }  
 
   ImGui::End();
 }
@@ -290,12 +319,12 @@ void load_font()
 {
   for (int i = 0; i < 3; i++) 
   {
-    Dikr_font = TTF_OpenFont(Dikr_font_arr[i] ,60);
+    Dikr_font = TTF_OpenFont(Dikr_font_vec[i].data() ,60);
     if (NULL != Dikr_font)
     {
       return;
     }
-    printf("Allah Akbar: Error loading font: %s\n", Dikr_font_arr[i]);
+    std::cout << "Allah Akbar: Error loading font: " << Dikr_font_vec[i] << '\n';
   }
 }
 
