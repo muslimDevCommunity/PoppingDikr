@@ -291,7 +291,7 @@ void RenderPreview(SDL_Renderer* renderer)
     load_font();
   }
 
-  SDL_Rect preview_rect = SDL_Rect{(w_width / 2) - 125, w_height - 90, 250, 60};
+  SDL_Rect preview_rect = SDL_Rect{w_width - 250, w_height - 60, 250, 60};
   SDL_Color Preview_Dikr_Color = SDL_Color{(Uint8)(Dikr_color[0] * 255.0f), (Uint8)(Dikr_color[1] * 255.0f), (Uint8)(Dikr_color[2] * 255.0f)};
   
   //Make Preview Texture
