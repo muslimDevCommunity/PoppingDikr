@@ -9,9 +9,9 @@
 
 #include <filesystem>
 
-//#ifdef __linux__
+#ifdef __linux__
 #include <unistd.h>
-//#endif
+#endif
 
 int cooldown_minutes = 0;
 
@@ -29,9 +29,11 @@ SDL_Texture* Preview_Texture = nullptr;
 bool error_loading_settings = false;
 
 std::vector<std::string> Dikr_font_vec = {
+#ifdef __linux__
   "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
   "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
+#endif
 };
 
 
@@ -270,6 +272,7 @@ void set_theme()
 
 void get_settings_path()
 {
+#ifdef __linux__
   std::string path = "/home/";
   path.append(getlogin());
 
@@ -281,6 +284,9 @@ void get_settings_path()
 
   path.append("/.PoppingDikr/Settings");
   Settings_path = path;
+#elif _WIN32
+  std::string path = "C:"
+#endif
 }
 
 void RenderPreview(SDL_Renderer* renderer)
@@ -317,7 +323,7 @@ void RenderPreview(SDL_Renderer* renderer)
 
 void load_font()
 {
-  for (int i = 0; i < 3; i++) 
+  for (int i = 0; i < Dikr_font_vec.size(); i++) 
   {
     Dikr_font = TTF_OpenFont(Dikr_font_vec[i].data() ,60);
     if (NULL != Dikr_font)
@@ -335,6 +341,7 @@ void frame_cleenup()
 
 void make_app_run_on_boot()
 {
+#ifdef __linux__
   const char* dot_desktop_content = "[Desktop Entry]\n"
   "Version=1.0\n"
   "Type=Application\n"
@@ -350,6 +357,7 @@ void make_app_run_on_boot()
   std::ofstream dot_desktop_file;
   dot_desktop_file.open(path.c_str());
   dot_desktop_file << dot_desktop_content;
-
+//#elif _WIN32
+#endif
 }
 
