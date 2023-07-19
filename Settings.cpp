@@ -7,10 +7,12 @@
 #include <iostream>
 #include <vector>
 
-#include <filesystem>
 
 #ifdef __linux__
-#include <unistd.h>
+  #include <filesystem>
+  #include <unistd.h>
+#elif _WIN32
+  #include <windows.h>
 #endif
 
 int cooldown_minutes = 0;
@@ -33,6 +35,9 @@ std::vector<std::string> Dikr_font_vec = {
   "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
   "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
+#elif _WIN32
+  "C:\\Windows\\Fonts\\arabtype.ttf",
+  "C:\\Windows\\Fonts\\ARABTYPE.TTF"
 #endif
 };
 
@@ -238,7 +243,7 @@ void read_settings(){
 void write_settings()
 {
   std::ofstream SettingsFile;
-  SettingsFile.open(Settings_path.c_str());
+  SettingsFile.open(Settings_path.c_str(), std::ios::out);
 
   SettingsFile << cooldown_minutes << '\n';
   SettingsFile << int(BG_color[0] * 255) << ' ' << int(BG_color[1] * 255) << ' ' << int(BG_color[2] * 255) << '\n';
@@ -285,7 +290,18 @@ void get_settings_path()
   path.append("/.PoppingDikr/Settings");
   Settings_path = path;
 #elif _WIN32
-  std::string path = "C:"
+  std::string path = "C:\\Users\\";
+  
+  char user_name[257];
+  DWORD user_name_length = sizeof(user_name);
+  GetUserName(user_name, &user_name_length);
+  
+  path.append(user_name);
+  path.append("\\AppData\\Roaming\\popping-dikr");
+
+  CreateDirectory(path.c_str(), NULL);
+  path.append("\\settings");
+  Settings_path = path;
 #endif
 }
 
@@ -358,6 +374,8 @@ void make_app_run_on_boot()
   dot_desktop_file.open(path.c_str());
   dot_desktop_file << dot_desktop_content;
 #elif _WIN32
+//C:\Users\ouham\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+std::cout << "BismiAllah: not able to do that yet\n"
 #endif
 }
 
