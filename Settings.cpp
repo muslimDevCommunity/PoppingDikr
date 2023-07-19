@@ -357,7 +357,7 @@ void make_app_run_on_boot()
   std::ofstream dot_desktop_file;
   dot_desktop_file.open(path.c_str());
   dot_desktop_file << dot_desktop_content;
-//#elif _WIN32
+#elif _WIN32
 #endif
 }
 
