@@ -4,10 +4,14 @@
 #include <SDL_ttf.h>
 
 #include <stdio.h>
-
-#include <filesystem>
 #include <fstream>
-#include <unistd.h>
+
+#ifdef __linux__
+  #include <filesystem>
+  #include <unistd.h>
+#elif _WIN32
+  #include <windows.h>
+#endif
 
 //
 bool running = true;
@@ -235,14 +239,31 @@ void load_settings(){
 
 void get_settings_path()
 {
+#ifdef __linux__
   std::string path = "/home/";
   path.append(getlogin());
 
+  
   std::string Settings_dir = path;
   Settings_dir.append("/.PoppingDikr");
   std::filesystem::create_directory(Settings_dir.c_str());
 
+
   path.append("/.PoppingDikr/Settings");
   Settings_path = path;
+#elif _WIN32
+  std::string path = "C:\\Users\\";
+  
+  char user_name[257];
+  DWORD user_name_length = sizeof(user_name);
+  GetUserName(user_name, &user_name_length);
+  
+  path.append(user_name);
+  path.append("\\AppData\\Roaming\\popping-dikr");
+
+  CreateDirectory(path.c_str(), NULL);
+  path.append("\\settings");
+  Settings_path = path;
+#endif
 }
 

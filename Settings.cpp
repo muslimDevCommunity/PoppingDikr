@@ -375,7 +375,7 @@ void make_app_run_on_boot()
   dot_desktop_file << dot_desktop_content;
 #elif _WIN32
 //C:\Users\ouham\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-std::cout << "BismiAllah: not able to do that yet\n"
+std::cout << "BismiAllah: not able to do that yet\n";
 #endif
 }
 
