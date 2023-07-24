@@ -37,9 +37,14 @@ int font_size = 60;
 short selected_Dikr = 0;
 
 const char* Dikr_font_arr_ar[3] = {
+#ifdef __linux__
   "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
   "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
+#elif _WIN32
+  "C:\\Windows\\Fonts\\arabtype.ttf",
+  "C:\\Windows\\Fonts\\ARABTYPE.TTF"
+#endif
 };
 
 
