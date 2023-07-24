@@ -7,7 +7,6 @@
 #include <iostream>
 #include <vector>
 
-
 #ifdef __linux__
   #include <filesystem>
   #include <unistd.h>
@@ -27,7 +26,6 @@ const char* Dikr_Preview = u8"\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ"
 TTF_Font* Dikr_font = nullptr;
 SDL_Texture* Preview_Texture = nullptr;
 
-
 bool error_loading_settings = false;
 
 std::vector<std::string> Dikr_font_vec = {
@@ -41,6 +39,7 @@ std::vector<std::string> Dikr_font_vec = {
 #endif
 };
 
+int dikr_font_index = 0;
 
 void init();
 void set_theme();
@@ -56,7 +55,6 @@ void frame_cleenup();
 // Main code
 int main()
 {
-
     // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
@@ -187,7 +185,8 @@ void show_settings()
       {
         if(ImGui::Button(Dikr_font_vec[i].data()))
         {
-          std::cout << "Incha2Allah will select ffont: " << Dikr_font_vec[0] << '\n';
+          std::cout << "Incha2Allah will select ffont: " << Dikr_font_vec[i] << '\n';
+          dikr_font_index = i;
         }
       }
 
@@ -248,6 +247,7 @@ void write_settings()
   SettingsFile << cooldown_minutes << '\n';
   SettingsFile << int(BG_color[0] * 255) << ' ' << int(BG_color[1] * 255) << ' ' << int(BG_color[2] * 255) << '\n';
   SettingsFile << int(Dikr_color[0] * 255) << ' ' << int(Dikr_color[1] * 255) << ' ' << int(Dikr_color[2] * 255) << '\n';
+  SettingsFile << Dikr_font_vec[dikr_font_index] << '\n'; 
   SettingsFile.close();
 
 }
@@ -339,6 +339,13 @@ void RenderPreview(SDL_Renderer* renderer)
 
 void load_font()
 {
+  Dikr_font = TTF_OpenFont(Dikr_font_vec[dikr_font_index].data() ,60);
+  if (NULL != Dikr_font)
+  {
+    return;
+  }
+  std::cout << "Allah Akbar: Error loading font: " << Dikr_font_vec[dikr_font_index] << '\n';
+  
   for (int i = 0; i < Dikr_font_vec.size(); i++) 
   {
     Dikr_font = TTF_OpenFont(Dikr_font_vec[i].data() ,60);
@@ -377,5 +384,10 @@ void make_app_run_on_boot()
 //C:\Users\ouham\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 std::cout << "BismiAllah: not able to do that yet\n";
 #endif
+}
+
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+  return main();
 }
 

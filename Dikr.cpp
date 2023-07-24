@@ -73,7 +73,8 @@ void pop_Dikr();
 void clean_up();
 void cooldown();
 
-int main(){
+int main()
+{
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0){
         printf("Error: %s\n", SDL_GetError());
         return -1;
@@ -267,3 +268,7 @@ void get_settings_path()
 #endif
 }
 
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+  return main();
+}
