@@ -125,7 +125,7 @@ void initialize(){
 void pop_Dikr(){
   load_settings();
 
-    window = SDL_CreateWindow("Dikr", screen_width - window_width, screen_heigth * 3 / 10, window_width, window_height, SDL_WINDOW_POPUP_MENU);
+    window = SDL_CreateWindow("Dikr", screen_width - window_width, screen_heigth * 3 / 10, window_width, window_height, SDL_WINDOW_POPUP_MENU | SDL_WINDOW_BORDERLESS);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
     if(renderer == nullptr){
