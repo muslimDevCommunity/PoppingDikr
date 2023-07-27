@@ -273,7 +273,10 @@ void get_settings_path()
 #endif
 }
 
+#ifdef _WIN32
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
   return main();
 }
+#endif
+
