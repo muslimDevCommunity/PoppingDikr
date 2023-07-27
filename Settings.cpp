@@ -190,7 +190,12 @@ void show_settings()
     {
       for(long long unsigned int i = 0; i < Dikr_font_vec.size(); i++)
       {
-        if(ImGui::Button(Dikr_font_vec[i].data()))
+#ifdef _WIN32
+        std::string sub = Dikr_font_vec[i].substr(Dikr_font_vec[i].find_last_of('\\') + 1, Dikr_font_vec[i].length() - Dikr_font_vec[i].find_last_of('\\') - 5);
+#else
+        std::string sub = Dikr_font_vec[i].substr(Dikr_font_vec[i].find_last_of('/') + 1, Dikr_font_vec[i].length() - Dikr_font_vec[i].find_last_of('\\') - 5);
+#endif
+        if(ImGui::Button(sub.data()))
         {
           std::cout << "Incha2Allah will select font: " << Dikr_font_vec[i] << '\n';
           dikr_font_index = i;
@@ -394,8 +399,10 @@ std::cout << "BismiAllah: not able to do that yet\n";
 #endif
 }
 
+#ifdef _WIN32
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
   return main();
 }
+#endif
 
