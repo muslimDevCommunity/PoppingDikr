@@ -3,8 +3,8 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include <stdio.h>
 #include <fstream>
+#include <vector>
 
 #ifdef __linux__
   #include <filesystem>
@@ -36,14 +36,17 @@ TTF_Font* Dikr_font = NULL;
 int font_size = 60;
 short selected_Dikr = 0;
 
-const char* Dikr_font_arr_ar[3] = {
+std::vector<std::string> Dikr_font_vec_ar = {
 #ifdef __linux__
   "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
   "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
 #elif _WIN32
-  "C:\\Windows\\Fonts\\arabtype.ttf",
-  "C:\\Windows\\Fonts\\ARABTYPE.TTF"
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstPoster.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstQurn.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstTitle.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstScreen.ttf",
+  "C:\\Windows\\Fonts\\ARABTYPE.ttf"
 #endif
 };
 
@@ -174,9 +177,9 @@ void clean_up(){
 
 void load_font()
 {
-  for (int i = 0; i < 3; i++) 
+  for (long long unsigned int i = 0; i < Dikr_font_vec_ar.size(); i++) 
   {
-    Dikr_font = TTF_OpenFont(Dikr_font_arr_ar[i] ,font_size);
+    Dikr_font = TTF_OpenFont(Dikr_font_vec_ar[i].c_str() ,font_size);
     if (NULL != Dikr_font)
     {
       return;

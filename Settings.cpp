@@ -34,12 +34,18 @@ std::vector<std::string> Dikr_font_vec = {
   "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
 #elif _WIN32
-  "C:\\Windows\\Fonts\\arabtype.ttf",
-  "C:\\Windows\\Fonts\\ARABTYPE.TTF"
+  "KacstQurn.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstPoster.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstQurn.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstTitle.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstScreen.ttf",
+  "C:\\Windows\\Fonts\\ARABTYPE.ttf"
 #endif
 };
 
 int dikr_font_index = 0;
+
+char BismiAllah[255];
 
 void init();
 void set_theme();
@@ -51,6 +57,7 @@ void make_app_run_on_boot();
 void show_settings();
 void RenderPreview(SDL_Renderer* renderer);
 void frame_cleenup();
+
 
 // Main code
 int main()
@@ -73,7 +80,7 @@ int main()
 #endif
 
     // Create window with SDL_Renderer graphics context
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI);
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
     SDL_Window* window = SDL_CreateWindow("BismiAllah PoppingDikr Settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w_width, w_height, window_flags);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr)
@@ -147,7 +154,7 @@ void show_settings()
   ImGui::SetNextWindowPos(ImVec2{0, 0});
   ImGui::SetNextWindowSize(ImVec2{(float)(w_width), (float)(w_height)});
 
-  ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground);
+  ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
   if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
   {
     if(ImGui::BeginTabItem("general"))
@@ -181,12 +188,13 @@ void show_settings()
     
     if(ImGui::BeginTabItem("fonts"))
     {
-      for(int i = 0; i < Dikr_font_vec.size(); i++)
+      for(long long unsigned int i = 0; i < Dikr_font_vec.size(); i++)
       {
         if(ImGui::Button(Dikr_font_vec[i].data()))
         {
-          std::cout << "Incha2Allah will select ffont: " << Dikr_font_vec[i] << '\n';
+          std::cout << "Incha2Allah will select font: " << Dikr_font_vec[i] << '\n';
           dikr_font_index = i;
+          load_font();
         }
       }
 
@@ -346,7 +354,7 @@ void load_font()
   }
   std::cout << "Allah Akbar: Error loading font: " << Dikr_font_vec[dikr_font_index] << '\n';
   
-  for (int i = 0; i < Dikr_font_vec.size(); i++) 
+  for (long long unsigned int i = 0; i < Dikr_font_vec.size(); i++) 
   {
     Dikr_font = TTF_OpenFont(Dikr_font_vec[i].data() ,60);
     if (NULL != Dikr_font)
