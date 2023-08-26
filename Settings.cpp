@@ -394,18 +394,8 @@ void make_app_run_on_boot()
   dot_desktop_file.open(path.c_str());
   dot_desktop_file << dot_desktop_content;
 #elif _WIN32
-//C:\Users\ouham\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-  std::cout << "BismiAllah: not able to do that yet\n";
-
-  char user_name[257];
-  DWORD user_name_length = sizeof(user_name);
-  GetUserName(user_name, &user_name_length);
-  
-  std::string path = "C:\\Users\\";
-  path.append(user_name);
-  path.append("\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup");
-
-  std::system("cmd /c mklink /d shortcut.Lnk popping-dikr.exe");
+  //BismiAllah: will only copy the file by the will of Allah
+  std::system("cmd /c copy popping-dikr.exe \"%appdata%/Microsoft/Windows/Start Menu/Programs/Startup\"");
 #endif
 }
 
