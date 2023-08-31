@@ -204,12 +204,14 @@ void make_Dikr_texture()
     return;
   }
 
-  selected_Dikr = rand() % 5;
 
   SDL_Surface * Dikr_Surface = TTF_RenderUTF8_Blended(Dikr_font, Dikr_list_ar[selected_Dikr].data(), Dikr_color);
   Dikr_Texture = SDL_CreateTextureFromSurface(renderer, Dikr_Surface);
 
   SDL_FreeSurface(Dikr_Surface);
+  
+  //to make the first dik to be 'BismiAllah' we only randomize after the first time
+  selected_Dikr = rand() % 5;
 }
 
 void load_settings(){
