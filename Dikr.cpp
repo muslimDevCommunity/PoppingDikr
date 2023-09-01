@@ -35,6 +35,7 @@ TTF_Font* Dikr_font = NULL;
 
 int font_size = 60;
 short selected_Dikr = 0;
+short selected_Font_id = 0;
 
 std::vector<std::string> Dikr_font_vec_ar = {
 #ifdef __linux__
@@ -57,6 +58,7 @@ _Ilaha \uFEEA\uFEDFإ
 _Mohammed \uFEAA\uFEE4\uFEA4\uFEE3
 _Bismi \uFEE2\uFEB4\uFE91
 _Sub7an \uFEE6\uFEA4\uFE92\uFEB3
+_Akbar \uFEAE\uFE92\uFEDBأ
 _Astaghfiro \uFEAE\uFED4\uFED0\uFE98\uFEB3أ
 _salla \uFEF0\uFEE0\uFEBB
 _ala \uFEF0\uFEE0\uFECB
@@ -64,12 +66,13 @@ _la ﻼ
 _illa لاإ
 */
 
-std::string Dikr_list_ar[5] = {
+std::string Dikr_list_ar[6] = {
   u8"\uFEEA\uFEE0\uFEDF\uFE8D \uFEE2\uFEB4\uFE91", //BismiAllah
   u8"\uFEEA\uFEE0\uFEDF\uFE8D \uFEE6\uFEA4\uFE92\uFEB3", //Sub7ana Allah
   u8"\uFEAA\uFEE4\uFEA4\uFEE3 \uFEF0\uFEE0\uFECB \uFEEA\uFEE0\uFEDF\uFE8D \uFEF0\uFEE0\uFEBB", // salla Allah ala Mohammed
   u8"\uFEEA\uFEE0\uFEDF\uFE8D \uFEAE\uFED4\uFED0\uFE98\uFEB3أ", //astaghfiro Allah
-  u8"\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ" //la ilaha illa Allah
+  u8"\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ", //la ilaha illa Allah
+  u8"\uFEAE\uFE92\uFEDBأ \uFEEA\uFEE0\uFEDF\uFE8D" //Allah Akbar
 };
 
 void initialize();
@@ -177,7 +180,13 @@ void clean_up(){
 
 void load_font()
 {
-  for (long long unsigned int i = 0; i < Dikr_font_vec_ar.size(); i++) 
+  Dikr_font = TTF_OpenFont(Dikr_font_vec_ar[selected_Font_id].c_str() ,font_size);
+  if (NULL != Dikr_font)
+  {
+    return;
+  }
+
+  for (int i = 0; i < Dikr_font_vec_ar.size(); i++) 
   {
     Dikr_font = TTF_OpenFont(Dikr_font_vec_ar[i].c_str() ,font_size);
     if (NULL != Dikr_font)
@@ -211,7 +220,7 @@ void make_Dikr_texture()
   SDL_FreeSurface(Dikr_Surface);
   
   //to make the first dik to be 'BismiAllah' we only randomize after the first time
-  selected_Dikr = rand() % 5;
+  selected_Dikr = rand() % 6;
 }
 
 void load_settings(){
@@ -240,6 +249,9 @@ void load_settings(){
       Dikr_color.g = Dikr_g;
       Dikr_color.b = Dikr_b;
     }
+
+    SettingsFile >> selected_Font_id;
+
     SettingsFile.close();
   }
   else

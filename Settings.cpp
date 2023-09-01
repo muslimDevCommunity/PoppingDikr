@@ -243,6 +243,9 @@ void read_settings(){
       Dikr_color[1] = Dikr_g / 255;
       Dikr_color[2] = Dikr_b / 255;
     }
+
+    SettingsFile >> dikr_font_index;
+
     SettingsFile.close();
     error_loading_settings = false;
   }
@@ -260,7 +263,7 @@ void write_settings()
   SettingsFile << cooldown_minutes << '\n';
   SettingsFile << int(BG_color[0] * 255) << ' ' << int(BG_color[1] * 255) << ' ' << int(BG_color[2] * 255) << '\n';
   SettingsFile << int(Dikr_color[0] * 255) << ' ' << int(Dikr_color[1] * 255) << ' ' << int(Dikr_color[2] * 255) << '\n';
-  SettingsFile << Dikr_font_vec[dikr_font_index] << '\n'; 
+  SettingsFile << dikr_font_index << '\n'; 
   SettingsFile.close();
 
 }
