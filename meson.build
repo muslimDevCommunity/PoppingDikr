@@ -10,6 +10,7 @@ sdl_dep = [
 
 executable('popping-dikr',
             'Dikr.cpp',
+            win_subsystem: 'windows',
             dependencies: sdl_dep)
 
 sdl_imgui_files = [
@@ -25,7 +26,4 @@ executable('popping-dikr-settings',
         ['Settings.cpp', sdl_imgui_files],
         dependencies: sdl_dep)
 
-Settings_files = [
-    'settings_exe/main.cpp'
-]
 
