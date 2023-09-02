@@ -5,9 +5,14 @@
 #include <fstream>
 
 #include <iostream>
+#include <vector>
 
-#include <filesystem>
-#include <unistd.h>
+#ifdef __linux__
+  #include <filesystem>
+  #include <unistd.h>
+#elif _WIN32
+  #include <windows.h>
+#endif
 
 int cooldown_minutes = 0;
 
@@ -21,15 +26,26 @@ const char* Dikr_Preview = u8"\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ"
 TTF_Font* Dikr_font = nullptr;
 SDL_Texture* Preview_Texture = nullptr;
 
-
 bool error_loading_settings = false;
 
-const char* Dikr_font_arr[3] = {
+std::vector<std::string> Dikr_font_vec = {
+#ifdef __linux__
   "/usr/share/fonts/truetype/kacst/KacstPoster.ttf",
   "/usr/share/fonts/truetype/kacst/KacstScreen.ttf",
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
+#elif _WIN32
+  "KacstQurn.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstPoster.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstQurn.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstTitle.ttf",
+  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstScreen.ttf",
+  "C:\\Windows\\Fonts\\ARABTYPE.ttf"
+#endif
 };
 
+int dikr_font_index = 0;
+
+char BismiAllah[255];
 
 void init();
 void set_theme();
@@ -42,10 +58,10 @@ void show_settings();
 void RenderPreview(SDL_Renderer* renderer);
 void frame_cleenup();
 
+
 // Main code
 int main()
 {
-
     // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
@@ -64,7 +80,7 @@ int main()
 #endif
 
     // Create window with SDL_Renderer graphics context
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI);
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
     SDL_Window* window = SDL_CreateWindow("BismiAllah PoppingDikr Settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w_width, w_height, window_flags);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr)
@@ -138,33 +154,65 @@ void show_settings()
   ImGui::SetNextWindowPos(ImVec2{0, 0});
   ImGui::SetNextWindowSize(ImVec2{(float)(w_width), (float)(w_height)});
 
-  ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground);
-  
-
-  ImGui::SliderInt("cooldown minutes", &cooldown_minutes, 1 ,120);
-
-  ImGui::ColorEdit3("Background Color", BG_color);
-  ImGui::ColorEdit3("Dikr Color", Dikr_color);
-
-  if(error_loading_settings)
+  ImGui::Begin("BismiAllah", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+  if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
   {
-    ImGui::TextColored(ImVec4(1, 1, 0, 1) ,"error reading files!\ntry save and then reload settings :)\nmay Allah bless you");
-  }
+    if(ImGui::BeginTabItem("general"))
+    {
+      ImGui::SliderInt("cooldown minutes", &cooldown_minutes, 1 ,120);
 
-  if(ImGui::Button("reload settings"))
-  {
-    read_settings();
-  }
+      ImGui::ColorEdit3("Background Color", BG_color);
+      ImGui::ColorEdit3("Dikr Color", Dikr_color);
 
-  if(ImGui::Button("save"))
-  {
-    write_settings();
-  }
+      if(error_loading_settings)
+      {
+        ImGui::TextColored(ImVec4(1, 1, 0, 1) ,"error reading files!\ntry save and then reload settings :)\nmay Allah bless you");
+      }
 
-  if(ImGui::Button("Make it run on boot"))
-  {
-    make_app_run_on_boot();
-  }
+      if(ImGui::Button("reload settings"))
+      {
+        read_settings();
+      }
+
+      if(ImGui::Button("save"))
+      {
+        write_settings();
+      }
+
+      if(ImGui::Button("Make it run on boot"))
+      {
+        make_app_run_on_boot();
+      }
+      ImGui::EndTabItem();
+    }
+    
+    if(ImGui::BeginTabItem("fonts"))
+    {
+      for(long long unsigned int i = 0; i < Dikr_font_vec.size(); i++)
+      {
+#ifdef _WIN32
+        std::string sub = Dikr_font_vec[i].substr(Dikr_font_vec[i].find_last_of('\\') + 1, Dikr_font_vec[i].length() - Dikr_font_vec[i].find_last_of('\\') - 5);
+#else
+        std::string sub = Dikr_font_vec[i].substr(Dikr_font_vec[i].find_last_of('/') + 1, Dikr_font_vec[i].length() - Dikr_font_vec[i].find_last_of('\\') - 5);
+#endif
+        if(ImGui::Button(sub.data()))
+        {
+          std::cout << "Incha2Allah will select font: " << Dikr_font_vec[i] << '\n';
+          dikr_font_index = i;
+          load_font();
+        }
+      }
+
+      ImGui::EndTabItem();
+    }
+
+    if(ImGui::BeginTabItem("Window"))
+    {
+      ImGui::EndTabItem();
+    }
+
+    ImGui::EndTabBar();
+  }  
 
   ImGui::End();
 }
@@ -195,6 +243,9 @@ void read_settings(){
       Dikr_color[1] = Dikr_g / 255;
       Dikr_color[2] = Dikr_b / 255;
     }
+
+    SettingsFile >> dikr_font_index;
+
     SettingsFile.close();
     error_loading_settings = false;
   }
@@ -207,11 +258,12 @@ void read_settings(){
 void write_settings()
 {
   std::ofstream SettingsFile;
-  SettingsFile.open(Settings_path.c_str());
+  SettingsFile.open(Settings_path.c_str(), std::ios::out);
 
   SettingsFile << cooldown_minutes << '\n';
   SettingsFile << int(BG_color[0] * 255) << ' ' << int(BG_color[1] * 255) << ' ' << int(BG_color[2] * 255) << '\n';
   SettingsFile << int(Dikr_color[0] * 255) << ' ' << int(Dikr_color[1] * 255) << ' ' << int(Dikr_color[2] * 255) << '\n';
+  SettingsFile << dikr_font_index << '\n'; 
   SettingsFile.close();
 
 }
@@ -241,6 +293,7 @@ void set_theme()
 
 void get_settings_path()
 {
+#ifdef __linux__
   std::string path = "/home/";
   path.append(getlogin());
 
@@ -252,6 +305,20 @@ void get_settings_path()
 
   path.append("/.PoppingDikr/Settings");
   Settings_path = path;
+#elif _WIN32
+  std::string path = "C:\\Users\\";
+  
+  char user_name[257];
+  DWORD user_name_length = sizeof(user_name);
+  GetUserName(user_name, &user_name_length);
+  
+  path.append(user_name);
+  path.append("\\AppData\\Roaming\\popping-dikr");
+
+  CreateDirectory(path.c_str(), NULL);
+  path.append("\\settings");
+  Settings_path = path;
+#endif
 }
 
 void RenderPreview(SDL_Renderer* renderer)
@@ -262,7 +329,7 @@ void RenderPreview(SDL_Renderer* renderer)
     load_font();
   }
 
-  SDL_Rect preview_rect = SDL_Rect{(w_width / 2) - 125, w_height - 90, 250, 60};
+  SDL_Rect preview_rect = SDL_Rect{w_width - 250, w_height - 60, 250, 60};
   SDL_Color Preview_Dikr_Color = SDL_Color{(Uint8)(Dikr_color[0] * 255.0f), (Uint8)(Dikr_color[1] * 255.0f), (Uint8)(Dikr_color[2] * 255.0f)};
   
   //Make Preview Texture
@@ -288,14 +355,21 @@ void RenderPreview(SDL_Renderer* renderer)
 
 void load_font()
 {
-  for (int i = 0; i < 3; i++) 
+  Dikr_font = TTF_OpenFont(Dikr_font_vec[dikr_font_index].data() ,60);
+  if (NULL != Dikr_font)
   {
-    Dikr_font = TTF_OpenFont(Dikr_font_arr[i] ,60);
+    return;
+  }
+  std::cout << "Allah Akbar: Error loading font: " << Dikr_font_vec[dikr_font_index] << '\n';
+  
+  for (long long unsigned int i = 0; i < Dikr_font_vec.size(); i++) 
+  {
+    Dikr_font = TTF_OpenFont(Dikr_font_vec[i].data() ,60);
     if (NULL != Dikr_font)
     {
       return;
     }
-    printf("Allah Akbar: Error loading font: %s\n", Dikr_font_arr[i]);
+    std::cout << "Allah Akbar: Error loading font: " << Dikr_font_vec[i] << '\n';
   }
 }
 
@@ -306,6 +380,7 @@ void frame_cleenup()
 
 void make_app_run_on_boot()
 {
+#ifdef __linux__
   const char* dot_desktop_content = "[Desktop Entry]\n"
   "Version=1.0\n"
   "Type=Application\n"
@@ -321,6 +396,16 @@ void make_app_run_on_boot()
   std::ofstream dot_desktop_file;
   dot_desktop_file.open(path.c_str());
   dot_desktop_file << dot_desktop_content;
-
+#elif _WIN32
+  //BismiAllah: will only copy the file by the will of Allah
+  std::system("cmd /c copy popping-dikr.exe \"%appdata%/Microsoft/Windows/Start Menu/Programs/Startup\"");
+#endif
 }
+
+#ifdef _WIN32
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+  return main();
+}
+#endif
 
