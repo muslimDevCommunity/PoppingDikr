@@ -10,6 +10,7 @@ sdl_dep = [
 
 executable('popping-dikr',
             'Dikr.cpp',
+            win_subsystem: 'windows',
             dependencies: sdl_dep)
 
 sdl_imgui_files = [

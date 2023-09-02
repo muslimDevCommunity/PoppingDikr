@@ -2,4 +2,5 @@ subprojects
 build
 builddir
 .vscode
+.vs
 imgui.ini
