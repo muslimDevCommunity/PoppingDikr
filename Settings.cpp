@@ -35,10 +35,9 @@ std::vector<std::string> Dikr_font_vec = {
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
 #elif _WIN32
   "KacstQurn.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstPoster.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstQurn.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstTitle.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstScreen.ttf",
+  "KacstPoster.ttf",
+  "KacstTitle.ttf",
+  "KacstScreen.ttf",
   "C:\\Windows\\Fonts\\ARABTYPE.ttf"
 #endif
 };
@@ -398,7 +397,7 @@ void make_app_run_on_boot()
   dot_desktop_file << dot_desktop_content;
 #elif _WIN32
   //BismiAllah: will only copy the file by the will of Allah
-  std::system("cmd /c copy popping-dikr.exe \"%appdata%/Microsoft/Windows/Start Menu/Programs/Startup\"");
+  std::system("cmd /c copy popping-dikr-shortcut.lnk \"%appdata%/Microsoft/Windows/Start Menu/Programs/Startup\"");
 #endif
 }
 
