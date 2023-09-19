@@ -35,10 +35,10 @@ std::vector<std::string> Dikr_font_vec = {
   "/usr/share/fonts/truetype/kacst/KacstQurn.ttf"
 #elif _WIN32
   "KacstQurn.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstPoster.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstQurn.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstTitle.ttf",
-  "C:\\Users\\ouham\\AppData\\Local\\Microsoft\\Windows\\Fonts\\KacstScreen.ttf",
+  "KacstPoster.ttf",
+  "KacstQurn.ttf",
+  "KacstTitle.ttf",
+  "KacstScreen.ttf",
   "C:\\Windows\\Fonts\\ARABTYPE.ttf"
 #endif
 };
