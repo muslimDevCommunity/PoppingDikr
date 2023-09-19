@@ -192,7 +192,7 @@ void show_settings()
 #ifdef _WIN32
         std::string sub = Dikr_font_vec[i].substr(Dikr_font_vec[i].find_last_of('\\') + 1, Dikr_font_vec[i].length() - Dikr_font_vec[i].find_last_of('\\') - 5);
 #else
-        std::string sub = Dikr_font_vec[i].substr(Dikr_font_vec[i].find_last_of('/') + 1, Dikr_font_vec[i].length() - Dikr_font_vec[i].find_last_of('\\') - 5);
+        std::string sub = Dikr_font_vec[i].substr(Dikr_font_vec[i].find_last_of('/') + 1, Dikr_font_vec[i].length() - Dikr_font_vec[i].find_last_of('/') - 5);
 #endif
         if(ImGui::Button(sub.data()))
         {
