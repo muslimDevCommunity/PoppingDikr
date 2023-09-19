@@ -21,6 +21,9 @@ std::string Settings_path;
 int cooldown_minutes = 1;
 int screen_width = 0, screen_heigth = 0;
 int window_width = 250, window_height = 60;
+//timer
+const uint8_t max_pop_up_time = 15;
+long pop_up_time;
 
 SDL_Color BG_color = SDL_Color{255, 255, 255};
 
@@ -128,8 +131,11 @@ void initialize(){
     srand(time(NULL));
 }
 
+//Draw the windows (pop-up)
 void pop_Dikr(){
   load_settings();
+  //time it popped up
+  pop_up_time = time(NULL);
 
     window = SDL_CreateWindow("Dikr", screen_width - window_width, screen_heigth * 3 / 10, window_width, window_height, SDL_WINDOW_POPUP_MENU | SDL_WINDOW_BORDERLESS);
     renderer = SDL_CreateRenderer(window, -1, 0);
@@ -156,6 +162,12 @@ void pop_Dikr(){
             {
                 w_running = false;
             }
+        }
+        //looking if 15 secs has passed
+        if(time(NULL) > (pop_up_time + max_pop_up_time))
+        {
+          w_running = false;
+          break;
         }
         //clear window
         SDL_SetRenderDrawColor(renderer, BG_color.r, BG_color.g, BG_color.b, 255);
