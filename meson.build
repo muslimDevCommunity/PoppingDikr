@@ -1,6 +1,7 @@
 # بسم الله الرحمن الرحيم
 project('Dikr', 'cpp',
-        version: '0.4.1')
+        version: '0.4.1',
+	default_options: 'buildtype=release')
 
 
 sdl_dep = [
