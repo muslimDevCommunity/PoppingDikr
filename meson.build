@@ -1,6 +1,6 @@
 # بسم الله الرحمن الرحيم
 project('Dikr', 'cpp',
-        default_options: 'default_library=static')
+        version: '0.4.1')
 
 
 sdl_dep = [
