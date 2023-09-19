@@ -1,5 +1,5 @@
 # بسم الله الرحمن الرحيم
-project('Dikr', 'cpp')
+project('Dikr', 'cpp', version: '0.4.1')
 
 
 sdl_dep = [
