@@ -1,6 +1,7 @@
 # بسم الله الرحمن الرحيم
 project('Dikr', 'cpp',
-        default_options: 'default_library=static')
+        version: '0.4.1',
+	default_options: 'buildtype=release')
 
 
 sdl_dep = [
@@ -24,6 +25,7 @@ sdl_imgui_files = [
 
 executable('popping-dikr-settings',
         ['Settings.cpp', sdl_imgui_files],
+        win_subsystem: 'windows',
         dependencies: sdl_dep)
 
 
