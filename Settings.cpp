@@ -397,7 +397,7 @@ void make_app_run_on_boot()
   dot_desktop_file << dot_desktop_content;
 #elif _WIN32
   //BismiAllah: will only copy the file by the will of Allah
-  std::system("cmd /c copy popping-dikr-shortcut \"%appdata%/Microsoft/Windows/Start Menu/Programs/Startup\"");
+  std::system("cmd /c copy popping-dikr-shortcut.lnk \"%appdata%/Microsoft/Windows/Start Menu/Programs/Startup\"");
 #endif
 }
 
