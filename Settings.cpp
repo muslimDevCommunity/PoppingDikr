@@ -25,6 +25,7 @@ const char* Dikr_Preview = u8"\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ"
 
 TTF_Font* Dikr_font = nullptr;
 SDL_Texture* Preview_Texture = nullptr;
+SDL_Rect preview_rect;
 
 bool error_loading_settings = false;
 
@@ -43,8 +44,8 @@ std::vector<std::string> Dikr_font_vec = {
 };
 
 int dikr_font_index = 0;
+int prev_dikr_font_index = 0;
 
-char BismiAllah[255];
 
 void init();
 void set_theme();
@@ -55,8 +56,7 @@ void write_settings();
 void make_app_run_on_boot();
 void show_settings();
 void RenderPreview(SDL_Renderer* renderer);
-void frame_cleenup();
-
+void MakePreview(SDL_Renderer* renderer);
 
 // Main code
 int main()
@@ -112,9 +112,9 @@ int main()
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
+            {
                 done = true;
-            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-                done = true;
+            }
         }
 
         // Start the Dear ImGui frame
@@ -129,11 +129,12 @@ int main()
         SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
         SDL_SetRenderDrawColor(renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
         SDL_RenderClear(renderer);
+
+        MakePreview(renderer);
         RenderPreview(renderer);
         
         ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
         SDL_RenderPresent(renderer);
-        frame_cleenup();
     }
 
     // Cleanup
@@ -320,17 +321,21 @@ void get_settings_path()
 #endif
 }
 
-void RenderPreview(SDL_Renderer* renderer)
+void MakePreview(SDL_Renderer* renderer)
 {
+  if(prev_dikr_font_index == dikr_font_index)
+  {
+    return;
+  }
+  SDL_DestroyTexture(Preview_Texture);
+
   if (NULL == Dikr_font)
   {
     printf("Allah Akbar: Dikr Font in NULL\n");
     load_font();
   }
-
-  SDL_Rect preview_rect = SDL_Rect{w_width - 250, w_height - 60, 250, 60};
+  preview_rect = SDL_Rect{w_width - 250, w_height - 60, 250, 60};
   SDL_Color Preview_Dikr_Color = SDL_Color{(Uint8)(Dikr_color[0] * 255.0f), (Uint8)(Dikr_color[1] * 255.0f), (Uint8)(Dikr_color[2] * 255.0f)};
-  
   //Make Preview Texture
   SDL_Surface * Dikr_Surface = TTF_RenderUTF8_Solid(Dikr_font, Dikr_Preview, Preview_Dikr_Color);
   Preview_Texture = SDL_CreateTextureFromSurface(renderer, Dikr_Surface);
@@ -343,9 +348,12 @@ void RenderPreview(SDL_Renderer* renderer)
   {
     printf("Allah Akbar: Preview_Texture is NULL\n");
   }
-
   SDL_FreeSurface(Dikr_Surface);
+  prev_dikr_font_index = dikr_font_index;
+}
 
+void RenderPreview(SDL_Renderer* renderer)
+{
   //Render Dikr Preview
   SDL_SetRenderDrawColor(renderer, (Uint8)(BG_color[0] * 255.0f), (Uint8)(BG_color[1] * 255.0f), (Uint8)(BG_color[2] * 255.0f), 255);
   SDL_RenderFillRect(renderer, &preview_rect);
@@ -370,11 +378,6 @@ void load_font()
     }
     std::cout << "Allah Akbar: Error loading font: " << Dikr_font_vec[i] << '\n';
   }
-}
-
-void frame_cleenup()
-{
-  SDL_DestroyTexture(Preview_Texture);
 }
 
 void make_app_run_on_boot()
