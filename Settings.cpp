@@ -323,7 +323,7 @@ void get_settings_path()
 
 void MakePreview(SDL_Renderer* renderer)
 {
-  if(prev_dikr_font_index == dikr_font_index)
+  if(prev_dikr_font_index == dikr_font_index && nullptr != Preview_Texture)
   {
     return;
   }

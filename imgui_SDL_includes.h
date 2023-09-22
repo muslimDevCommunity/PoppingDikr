@@ -6,6 +6,6 @@
 #include "thirdparty/imgui/imgui.h"
 #include "thirdparty/imgui/imgui_impl_sdl2.h"
 #include "thirdparty/imgui/imgui_impl_sdlrenderer.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #endif
