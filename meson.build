@@ -6,7 +6,7 @@ project('Dikr', 'cpp',
 
 sdl_dep = [
     dependency('sdl2'),
-    dependency('sdl2_ttf')
+    dependency('SDL2_ttf')
 ]
 
 executable('popping-dikr',
