@@ -1,7 +1,10 @@
 //بسم الله الرحمن الحيم
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+extern "C"
+{
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+}
 
 #include <fstream>
 #include <vector>
@@ -134,7 +137,7 @@ void initialize(){
 //Draw the windows (pop-up)
 void pop_Dikr(){
   load_settings();
-  //time it popped up
+  //time the window was shown
   pop_up_time = time(NULL);
 
     window = SDL_CreateWindow("Dikr", screen_width - window_width, screen_heigth * 3 / 10, window_width, window_height, SDL_WINDOW_POPUP_MENU | SDL_WINDOW_BORDERLESS);
@@ -235,7 +238,8 @@ void make_Dikr_texture()
   selected_Dikr = rand() % 6;
 }
 
-void load_settings(){
+void load_settings()
+{
   std::ifstream SettingsFile;
   SettingsFile.open(Settings_path.c_str(), std::ifstream::in);
   if(SettingsFile.is_open())
