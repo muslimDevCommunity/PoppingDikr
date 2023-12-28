@@ -38,12 +38,12 @@ int main()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
-    TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/kacst/KacstPoster.ttf", 100);
-    SDL_Color font_color = {.r=0, .g=0, .b=0};
-    SDL_Surface* surface = TTF_RenderUTF8_Blended(font, "\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ", font_color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    TTF_Font* dikr_font = TTF_OpenFont("/usr/share/fonts/truetype/kacst/KacstPoster.ttf", 100);
+    SDL_Color dikr_font_color = {.r=0, .g=0, .b=0};
+    SDL_Surface* dikr_surface = TTF_RenderUTF8_Blended(dikr_font, "\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ", dikr_font_color);
+    SDL_Texture* dikr_texture = SDL_CreateTextureFromSurface(renderer, dikr_surface);
 
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderCopy(renderer, dikr_texture, NULL, NULL);
 
     SDL_RenderPresent(renderer);
     SDL_Delay(2 * 1000);
