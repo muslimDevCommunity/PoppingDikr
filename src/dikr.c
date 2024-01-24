@@ -45,8 +45,16 @@ int main()
     bismi_allah:
     //load settings
 
+    //get screen size
+    {
+        SDL_DisplayMode dm;
+        SDL_GetCurrentDisplayMode(0, &dm);
+        screen_height = dm.h;
+        screen_width = dm.w;
+    }
+
     //pop the dikr app
-    SDL_Window* window = SDL_CreateWindow("dikr", 0, 0, window_width, window_height, SDL_WINDOW_SHOWN | SDL_WINDOW_POPUP_MENU | SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_BORDERLESS);
+    SDL_Window* window = SDL_CreateWindow("dikr", screen_width - window_width, (int)screen_height*3/10, window_width, window_height, SDL_WINDOW_SHOWN | SDL_WINDOW_POPUP_MENU | SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_BORDERLESS);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
