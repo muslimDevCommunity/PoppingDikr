@@ -15,6 +15,9 @@ int main()
     int window_width = 400;
     int window_height = 100;
     int sleep_minutes = 20; //minutes
+    SDL_Color window_background_color = {255, 255, 255, 255};
+    SDL_Color dikr_font_color = {.r=0, .g=0, .b=0, .a=255};
+    int display_seconds = 5;
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER))
     {
@@ -53,28 +56,30 @@ int main()
         screen_width = dm.w;
     }
 
-    //pop the dikr app
+    //make window and renderer
     SDL_Window* window = SDL_CreateWindow("dikr", screen_width - window_width, (int)screen_height*3/10, window_width, window_height, SDL_WINDOW_SHOWN | SDL_WINDOW_POPUP_MENU | SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_BORDERLESS);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, window_background_color.r, window_background_color.g, window_background_color.b, window_background_color.a);
     SDL_RenderClear(renderer);
 
+    //load fonts and create dikr
     TTF_Font* dikr_font = TTF_OpenFont(dikr_font_path, 100);
     if(NULL == dikr_font)
     {
         printf("[SDL_TTF] font is NULL %s\n", TTF_GetError());
     }
-    SDL_Color dikr_font_color = {.r=0, .g=0, .b=0, .a=255};
     SDL_Surface* dikr_surface = TTF_RenderUTF8_Blended(dikr_font, dikr_list[dikr_list_selected_index], dikr_font_color);
     SDL_Texture* dikr_texture = SDL_CreateTextureFromSurface(renderer, dikr_surface);
 
     SDL_RenderCopy(renderer, dikr_texture, NULL, NULL);
-
     SDL_RenderPresent(renderer);
-    SDL_Delay(2 * 1000);
+
+    //pop the dikr and hide when it is pressed
+    SDL_Delay(display_seconds * 1000);
 
     //cleen up
+    SDL_FreeSurface(dikr_surface);
     SDL_DestroyTexture(dikr_texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -82,7 +87,6 @@ int main()
     dikr_list_selected_index = rand() % (sizeof(dikr_list) / sizeof(dikr_list[0]));
 
     SDL_Delay(sleep_minutes * 60 * 1000);
-    //SDL_R
     goto bismi_allah;
 
     SDL_Quit();
