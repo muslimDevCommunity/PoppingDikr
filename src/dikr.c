@@ -1,6 +1,8 @@
 //بسم الله الرحمن الرحيم
 
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -18,6 +20,7 @@ int main()
     SDL_Color window_background_color = {255, 255, 255, 255};
     SDL_Color dikr_font_color = {.r=0, .g=0, .b=0, .a=255};
     int display_seconds = 5;
+    const char* conf_path = ".popping-dikr";
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER))
     {
@@ -27,6 +30,7 @@ int main()
     if(TTF_Init() == -1)
     {
         printf("Error: %s\n", TTF_GetError());
+        return -1;
     }
 
     //they are in unicode form because sdl2_ttf did not format them properly
@@ -42,12 +46,40 @@ int main()
 
     int dikr_list_selected_index = 0;
 
-    //for the font path: by the will of Allah it is gonna be read from the config file
+    
+    bismi_allah:
+    //config file
+    //1. ~/.popping-dikr
     const char* dikr_font_path = "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf";
 
-    bismi_allah:
+/*
+ * file structure by the will of Allah
+ * window_width - window_height - sleep_minutes - display_seconds - bg_color - dikr_color - font_path
+*/
     //load settings
+    #ifdef __linux__
+    {
+        char path[256] = "/home/";
+        strcat(path, getlogin());
+        strcat(path, "/.popping-dikr");
+        conf_path = path;
+    }
+    #endif
 
+    FILE* file = fopen(conf_path, "r");
+    if(file)
+    {
+        fread(&window_width, sizeof(window_width), 1, file);
+        fread(&window_height, sizeof(window_height), 1, file);
+        fread(&sleep_minutes, sizeof(sleep_minutes), 1, file);
+        fread(&display_seconds, sizeof(display_seconds), 1, file);
+        fread(&window_background_color, sizeof(window_background_color), 1, file);
+        fread(&dikr_font_color, sizeof(dikr_font_color), 1, file);
+        char path[256];
+        fgets(path, sizeof(path), file);
+        fclose(file);
+    }
+    else perror("file ");
     //get screen size
     {
         SDL_DisplayMode dm;
