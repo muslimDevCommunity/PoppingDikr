@@ -20,7 +20,9 @@ int main()
     SDL_Color window_background_color = {255, 255, 255, 255};
     SDL_Color dikr_font_color = {.r=0, .g=0, .b=0, .a=255};
     int display_seconds = 5;
-    const char* conf_path = ".popping-dikr";
+    char conf_path[1024];
+    conf_path[0] = '\0';
+    strcat(conf_path, ".popping-dikr");
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER))
     {
@@ -47,10 +49,14 @@ int main()
     int dikr_list_selected_index = 0;
 
     
-    bismi_allah:
+    bismi_allah:;
     //config file
     //1. ~/.popping-dikr
-    const char* dikr_font_path = "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf";
+    //const char* dikr_font_path = ;
+    char dikr_font_path[1024];
+    dikr_font_path[0] = '\0';
+    strcat(dikr_font_path, "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf");
+    printf("dikr_font_path: %s\n", dikr_font_path);
 
 /*
  * file structure by the will of Allah
@@ -62,11 +68,12 @@ int main()
         char path[256] = "/home/";
         strcat(path, getlogin());
         strcat(path, "/.popping-dikr");
-        conf_path = path;
+        conf_path[0] = '\0';
+        strcat(conf_path, path);
     }
     #endif
 
-    FILE* file = fopen(conf_path, "r");
+    FILE* file = fopen(conf_path, "rb");
     if(file)
     {
         fread(&window_width, sizeof(window_width), 1, file);
@@ -79,7 +86,7 @@ int main()
         fgets(path, sizeof(path), file);
         fclose(file);
     }
-    else perror("file ");
+    else perror("config file ");
     //get screen size
     {
         SDL_DisplayMode dm;
@@ -96,6 +103,7 @@ int main()
     SDL_RenderClear(renderer);
 
     //load fonts and create dikr
+    printf("dikr_font_path: %s\n", dikr_font_path);
     TTF_Font* dikr_font = TTF_OpenFont(dikr_font_path, 100);
     if(NULL == dikr_font)
     {
