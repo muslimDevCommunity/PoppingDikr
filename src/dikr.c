@@ -82,8 +82,7 @@ int main()
         fread(&display_seconds, sizeof(display_seconds), 1, file);
         fread(&window_background_color, sizeof(window_background_color), 1, file);
         fread(&dikr_font_color, sizeof(dikr_font_color), 1, file);
-        char path[256];
-        fgets(path, sizeof(path), file);
+        fgets(dikr_font_path, sizeof(dikr_font_path), file);
         fclose(file);
     }
     else perror("config file ");
