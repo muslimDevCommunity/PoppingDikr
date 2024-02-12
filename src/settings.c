@@ -1,5 +1,8 @@
 //بسم الله الرحمن الرحيم
 
+#include <SDL2/SDL.h>
+#include "submodules/Nuklear/nuklear.h"
+#include "submodules/Nuklear/demo/sdl_renderer/nuklear_sdl_renderer.h"
 
 int main()
 {
