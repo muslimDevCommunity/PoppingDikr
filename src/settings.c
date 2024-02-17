@@ -80,11 +80,13 @@ int main()
         }
         nk_input_end(ctx);
 
-        if(nk_begin(ctx, "bismi_allah", nk_rect(50, 50, 230, 250), 0/*no flags*/))
+        int screen_width, screen_height;
+        SDL_GetWindowSize(window, &screen_width, &screen_height);
+        if(nk_begin(ctx, "bismi_allah", nk_rect(0, 0, screen_width, screen_height), 0/*no flags*/))
         {
-            nk_layout_row_static(ctx, 30, 80, 1);
-            if (nk_button_label(ctx, "button"))
-                fprintf(stdout, "button pressed\n");
+            nk_layout_row_static(ctx, 30, 200, 1);
+            if (nk_button_label(ctx, "in the name of Allah"))
+                fprintf(stdout, "in the name of Allah\n");
             
         }nk_end(ctx);
 
