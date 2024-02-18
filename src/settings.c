@@ -1,4 +1,9 @@
 //بسم الله الرحمن الرحيم
+
+#ifdef __unix__
+    #include <unistd.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -38,6 +43,19 @@ int main()
     popping_dikr_dikr_font_path[0] = '\0';
     strcat(popping_dikr_dikr_font_path, "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf");
 
+    char popping_dikr_conf_path[1024];
+    popping_dikr_conf_path[0] = '\0';
+    strcat(popping_dikr_conf_path, ".popping-dikr");
+
+    #ifdef __linux__
+    {
+        char path[256] = "/home/";
+        strcat(path, getlogin());
+        strcat(path, "/.popping-dikr");
+        popping_dikr_conf_path[0] = '\0';
+        strcat(popping_dikr_conf_path, path);
+    }
+    #endif
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow("popping dikr settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 800, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
@@ -80,14 +98,26 @@ int main()
         }
         nk_input_end(ctx);
 
-        int screen_width, screen_height;
-        SDL_GetWindowSize(window, &screen_width, &screen_height);
-        if(nk_begin(ctx, "bismi_allah", nk_rect(0, 0, screen_width, screen_height), 0/*no flags*/))
+        int window_width, window_height;
+        SDL_GetWindowSize(window, &window_width, &window_height);
+        if(nk_begin(ctx, "bismi_allah", nk_rect(0, 0, window_width, window_height), 0/*no flags*/))
         {
             nk_layout_row_static(ctx, 30, 200, 1);
-            if (nk_button_label(ctx, "in the name of Allah"))
-                fprintf(stdout, "in the name of Allah\n");
-            
+            if(nk_button_label(ctx, "save"))
+            {
+                FILE* file = fopen(popping_dikr_conf_path, "wb");
+                if(file)
+                {
+                fwrite(&popping_dikr_window_width, sizeof(popping_dikr_window_width), 1, file);
+                fwrite(&popping_dikr_window_height, sizeof(popping_dikr_window_height), 1, file);
+                fwrite(&popping_dikr_sleep_minutes, sizeof(popping_dikr_sleep_minutes), 1, file);
+                fwrite(&popping_dikr_display_seconds, sizeof(popping_dikr_display_seconds), 1, file);
+                fwrite(&popping_dikr_window_background_color, sizeof(popping_dikr_window_background_color), 1, file);
+                fwrite(&popping_dikr_dikr_font_color, sizeof(popping_dikr_dikr_font_color), 1, file);
+                fputs(popping_dikr_dikr_font_path, file);
+                fclose(file);
+                }else perror("config file error ");
+            }
         }nk_end(ctx);
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
