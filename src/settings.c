@@ -31,8 +31,6 @@
 int main()
 {
     //popping_dikr vars
-    int popping_dikr_screen_height = 0;
-    int popping_dikr_screen_width = 0;
     int popping_dikr_window_width = 400;
     int popping_dikr_window_height = 100;
     int popping_dikr_sleep_minutes = 20; //minutes
@@ -42,6 +40,18 @@ int main()
     char popping_dikr_dikr_font_path[1024];
     popping_dikr_dikr_font_path[0] = '\0';
     strcat(popping_dikr_dikr_font_path, "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf");
+
+    struct nk_colorf font_color;
+    font_color.r = popping_dikr_dikr_font_color.r / 255;
+    font_color.g = popping_dikr_dikr_font_color.g / 255;
+    font_color.b = popping_dikr_dikr_font_color.b / 255;
+    font_color.a = 1.0f;
+
+    struct nk_colorf background_color;
+    background_color.r = popping_dikr_window_background_color.r / 255;
+    background_color.g = popping_dikr_window_background_color.g / 255;
+    background_color.b = popping_dikr_window_background_color.b / 255;
+    background_color.a = 1.0f;
 
     char popping_dikr_conf_path[1024];
     popping_dikr_conf_path[0] = '\0';
@@ -102,9 +112,51 @@ int main()
         SDL_GetWindowSize(window, &window_width, &window_height);
         if(nk_begin(ctx, "bismi_allah", nk_rect(0, 0, window_width, window_height), 0/*no flags*/))
         {
+            //window dimensions
+            nk_layout_row_dynamic(ctx, 30, 2);
+            nk_property_int(ctx, "window width", 0, &popping_dikr_window_width, 1000, 1, 1);
+            nk_property_int(ctx, "window height", 0, &popping_dikr_window_height, 1000, 1, 1);
+
+            //diplay seconds
+            //sleep minutes
+            nk_layout_row_dynamic(ctx, 30, 2);
+            nk_property_int(ctx, "display seconds", 0, &popping_dikr_display_seconds, 1000, 1, 1);
+            nk_property_int(ctx, "sleep minutes", 0, &popping_dikr_sleep_minutes, 1000, 1, 1);
+
+            //font colors
+            nk_layout_row_static(ctx, 25, 200, 2);
+            nk_label(ctx, "font color", NK_TEXT_LEFT);
+            if(nk_combo_begin_color(ctx, nk_rgb_cf(font_color), nk_vec2(200, 200)))
+            {
+                nk_layout_row_dynamic(ctx, 120, 1);
+                font_color = nk_color_picker(ctx, font_color, NK_RGBA);
+                nk_combo_end(ctx);
+            }
+
+            //background color
+            nk_layout_row_static(ctx, 25, 200, 2);
+            nk_label(ctx, "background color", NK_TEXT_LEFT);
+            if(nk_combo_begin_color(ctx, nk_rgb_cf(background_color), nk_vec2(200, 200)))
+            {
+                nk_layout_row_dynamic(ctx, 120, 1);
+                background_color = nk_color_picker(ctx, background_color, NK_RGBA);
+                nk_combo_end(ctx);
+            }
+
+            //save
             nk_layout_row_static(ctx, 30, 200, 1);
             if(nk_button_label(ctx, "save"))
             {
+                popping_dikr_dikr_font_color.r = font_color.r * 255;
+                popping_dikr_dikr_font_color.g = font_color.g * 255;
+                popping_dikr_dikr_font_color.b = font_color.b * 255;
+                popping_dikr_dikr_font_color.a = font_color.a * 255;
+
+                popping_dikr_window_background_color.r = background_color.r * 255;
+                popping_dikr_window_background_color.g = background_color.g * 255;
+                popping_dikr_window_background_color.b = background_color.b * 255;
+                popping_dikr_window_background_color.a = background_color.a * 255;
+
                 FILE* file = fopen(popping_dikr_conf_path, "wb");
                 if(file)
                 {
