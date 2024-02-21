@@ -41,21 +41,12 @@ int main()
     popping_dikr_dikr_font_path[0] = '\0';
     strcat(popping_dikr_dikr_font_path, "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf");
 
-    struct nk_colorf font_color;
-    font_color.r = popping_dikr_dikr_font_color.r / 255;
-    font_color.g = popping_dikr_dikr_font_color.g / 255;
-    font_color.b = popping_dikr_dikr_font_color.b / 255;
-    font_color.a = 1.0f;
-
-    struct nk_colorf background_color;
-    background_color.r = popping_dikr_window_background_color.r / 255;
-    background_color.g = popping_dikr_window_background_color.g / 255;
-    background_color.b = popping_dikr_window_background_color.b / 255;
-    background_color.a = 1.0f;
-
     char popping_dikr_conf_path[1024];
     popping_dikr_conf_path[0] = '\0';
     strcat(popping_dikr_conf_path, ".popping-dikr");
+
+    struct nk_colorf background_color;
+    struct nk_colorf font_color;
 
     #ifdef __linux__
     {
@@ -66,6 +57,23 @@ int main()
         strcat(popping_dikr_conf_path, path);
     }
     #endif
+
+    //load the settings
+    {
+        FILE* file = fopen(popping_dikr_conf_path, "rb");
+        if(file)
+        {
+            fread(&popping_dikr_window_width, sizeof(popping_dikr_window_width), 1, file);
+            fread(&popping_dikr_window_height, sizeof(popping_dikr_window_height), 1, file);
+            fread(&popping_dikr_sleep_minutes, sizeof(popping_dikr_sleep_minutes), 1, file);
+            fread(&popping_dikr_display_seconds, sizeof(popping_dikr_display_seconds), 1, file);
+            fread(&popping_dikr_window_background_color, sizeof(popping_dikr_window_background_color), 1, file);
+            fread(&popping_dikr_dikr_font_color, sizeof(popping_dikr_dikr_font_color), 1, file);
+            fgets(popping_dikr_dikr_font_path, sizeof(popping_dikr_dikr_font_path), file);
+            fclose(file);
+        }
+        else perror("config file ");
+    }
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow("popping dikr settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 800, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
@@ -95,6 +103,17 @@ int main()
 
         /*nk_style_load_all_cursors(ctx, atlas->cursors);*/
         nk_style_set_font(ctx, &font->handle);
+
+        //does not need to be inside this block
+        //but it's here for clean experiance
+        font_color.r = (float)popping_dikr_dikr_font_color.r / 2550.f;
+        font_color.g = (float)popping_dikr_dikr_font_color.g / 255.0f;
+        font_color.b = (float)popping_dikr_dikr_font_color.b / 255.0f;
+        font_color.a = 1.0f;
+        background_color.r = (float)popping_dikr_window_background_color.r / 255.0f;
+        background_color.g = (float)popping_dikr_window_background_color.g / 255.0f;
+        background_color.b = (float)popping_dikr_window_background_color.b / 255.0f;
+        background_color.a = 1.0f;
     }
 
     while(1)
