@@ -66,13 +66,14 @@ int main()
         FILE* file = fopen(popping_dikr_conf_path, "rb");
         if(file)
         {
-            fread(&popping_dikr_window_width, sizeof(popping_dikr_window_width), 1, file);
-            fread(&popping_dikr_window_height, sizeof(popping_dikr_window_height), 1, file);
-            fread(&popping_dikr_sleep_minutes, sizeof(popping_dikr_sleep_minutes), 1, file);
-            fread(&popping_dikr_display_seconds, sizeof(popping_dikr_display_seconds), 1, file);
-            fread(&popping_dikr_window_background_color, sizeof(popping_dikr_window_background_color), 1, file);
-            fread(&popping_dikr_dikr_font_color, sizeof(popping_dikr_dikr_font_color), 1, file);
-            fgets(popping_dikr_dikr_font_path, sizeof(popping_dikr_dikr_font_path), file);
+            int tmp = 0; //to remove errors
+            tmp = fread(&popping_dikr_window_width, sizeof(popping_dikr_window_width), 1, file);
+            tmp = fread(&popping_dikr_window_height, sizeof(popping_dikr_window_height), 1, file);
+            tmp = fread(&popping_dikr_sleep_minutes, sizeof(popping_dikr_sleep_minutes), 1, file);
+            tmp = fread(&popping_dikr_display_seconds, sizeof(popping_dikr_display_seconds), 1, file);
+            tmp = fread(&popping_dikr_window_background_color, sizeof(popping_dikr_window_background_color), 1, file);
+            tmp = fread(&popping_dikr_dikr_font_color, sizeof(popping_dikr_dikr_font_color), 1, file);
+            char *str = fgets(popping_dikr_dikr_font_path, sizeof(popping_dikr_dikr_font_path), file);
             fclose(file);
         }
         else perror("config file ");

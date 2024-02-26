@@ -76,13 +76,14 @@ int main()
     FILE* file = fopen(conf_path, "rb");
     if(file)
     {
-        fread(&window_width, sizeof(window_width), 1, file);
-        fread(&window_height, sizeof(window_height), 1, file);
-        fread(&sleep_minutes, sizeof(sleep_minutes), 1, file);
-        fread(&display_seconds, sizeof(display_seconds), 1, file);
-        fread(&window_background_color, sizeof(window_background_color), 1, file);
-        fread(&dikr_font_color, sizeof(dikr_font_color), 1, file);
-        fgets(dikr_font_path, sizeof(dikr_font_path), file);
+        int tmp = 0;
+        tmp = fread(&window_width, sizeof(window_width), 1, file);
+        tmp = fread(&window_height, sizeof(window_height), 1, file);
+        tmp = fread(&sleep_minutes, sizeof(sleep_minutes), 1, file);
+        tmp = fread(&display_seconds, sizeof(display_seconds), 1, file);
+        tmp = fread(&window_background_color, sizeof(window_background_color), 1, file);
+        tmp = fread(&dikr_font_color, sizeof(dikr_font_color), 1, file);
+        char *str = fgets(dikr_font_path, sizeof(dikr_font_path), file);
         fclose(file);
     }
     else perror("config file ");
