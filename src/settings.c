@@ -41,6 +41,8 @@ int main()
     popping_dikr_dikr_font_path[0] = '\0';
     strcat(popping_dikr_dikr_font_path, "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf");
 
+    int popping_dikr_dikr_font_path_length;
+
     char popping_dikr_conf_path[1024];
     popping_dikr_conf_path[0] = '\0';
     strcat(popping_dikr_conf_path, ".popping-dikr");
@@ -50,6 +52,7 @@ int main()
 
     #ifdef __linux__
     {
+        //getting the config path
         char path[256] = "/home/";
         strcat(path, getlogin());
         strcat(path, "/.popping-dikr");
@@ -74,6 +77,7 @@ int main()
         }
         else perror("config file ");
     }
+    popping_dikr_dikr_font_path_length = strlen(popping_dikr_dikr_font_path);
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow("popping dikr settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 800, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
@@ -151,6 +155,21 @@ int main()
                 font_color = nk_color_picker(ctx, font_color, NK_RGBA);
                 nk_combo_end(ctx);
             }
+            //font path
+            //TODO change the font path selector into something like a shocase of all fonts 'a rendered texture with that font'
+            nk_layout_row_dynamic(ctx, 30, 2);
+            nk_label(ctx, "font path", NK_TEXT_LEFT);
+            nk_edit_string(ctx, NK_EDIT_SIMPLE, popping_dikr_dikr_font_path, &popping_dikr_dikr_font_path_length, sizeof(popping_dikr_dikr_font_path), nk_filter_default);
+            /*
+            nk_layout_row_dynamic(ctx, 30, 1);
+            if(nk_button_label(ctx, "choose from installed fonts"))
+                show_gallery = True;
+            if(show_gallery)
+            {
+                
+            }
+            */
+
 
             //background color
             nk_layout_row_static(ctx, 25, 200, 2);
@@ -185,7 +204,10 @@ int main()
                 fwrite(&popping_dikr_display_seconds, sizeof(popping_dikr_display_seconds), 1, file);
                 fwrite(&popping_dikr_window_background_color, sizeof(popping_dikr_window_background_color), 1, file);
                 fwrite(&popping_dikr_dikr_font_color, sizeof(popping_dikr_dikr_font_color), 1, file);
+                char c = popping_dikr_dikr_font_path[popping_dikr_dikr_font_path_length + 1];
+                popping_dikr_dikr_font_path[popping_dikr_dikr_font_path_length] = '\0';
                 fputs(popping_dikr_dikr_font_path, file);
+                popping_dikr_dikr_font_path[popping_dikr_dikr_font_path_length] = c;
                 fclose(file);
                 }else perror("config file error ");
             }
