@@ -111,7 +111,7 @@ int main()
 
         //does not need to be inside this block
         //but it's here for clean experiance
-        font_color.r = (float)popping_dikr_dikr_font_color.r / 2550.f;
+        font_color.r = (float)popping_dikr_dikr_font_color.r / 255.0f;
         font_color.g = (float)popping_dikr_dikr_font_color.g / 255.0f;
         font_color.b = (float)popping_dikr_dikr_font_color.b / 255.0f;
         font_color.a = 1.0f;
