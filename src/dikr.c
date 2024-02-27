@@ -56,7 +56,6 @@ int main()
     char dikr_font_path[1024];
     dikr_font_path[0] = '\0';
     strcat(dikr_font_path, "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf");
-    printf("dikr_font_path: %s\n", dikr_font_path);
 
 /*
  * file structure by the will of Allah
