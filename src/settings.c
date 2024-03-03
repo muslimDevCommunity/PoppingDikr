@@ -214,6 +214,8 @@ int main()
                     nk_layout_row_dynamic(ctx, 25, 1);
                     for(int i = 0; i < font_count; i++)
                     {
+                        //TODO only show this button if it is a ttf
+                        if(NULL == strstr(font_path_array[i], ".ttf")) continue;
                         if(nk_button_label(ctx, font_path_array[i]))
                         {
                             popping_dikr_dikr_font_path[0] = '\0';
