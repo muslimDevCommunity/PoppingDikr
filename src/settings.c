@@ -39,7 +39,7 @@ int main()
     SDL_Color popping_dikr_dikr_font_color = {.r=0, .g=0, .b=0, .a=255};
     char popping_dikr_dikr_font_path[1024];
     popping_dikr_dikr_font_path[0] = '\0';
-    strcat(popping_dikr_dikr_font_path, "/nix/store/7s5v8lcmb38dbsfp6g7nvizdj2p0875v-kacst-2.01/share/fonts/kacst/KacstPoster.ttf");
+    strcat(popping_dikr_dikr_font_path, "res/KacstPoster.ttf");
 
     int popping_dikr_dikr_font_path_length;
 
