@@ -28,6 +28,10 @@
 #include "../submodules/Nuklear/nuklear.h"
 #include "../submodules/Nuklear/demo/sdl_renderer/nuklear_sdl_renderer.h"
 
+#ifdef __linux__
+#define SUPPORTED_PLATFORM_TO_SCAN_SYSTEM_FONTS
+#endif
+
 int main()
 {
     //popping_dikr vars
@@ -125,13 +129,8 @@ int main()
     static char **font_path_array = NULL;                       //array of null terminated paths
     static int font_count = 1;                                  //number of fonts
 
-    if(NULL != buffer)
-    {
-        free(buffer);
-        free(font_path_array);
-        font_count = 1;
-    }
-    
+    #ifdef __linux__
+    //TODO make this depend on platform
     system("fc-list > /tmp/fc-list_scan");
     int file_size;
     FILE *fp = fopen("/tmp/fc-list_scan", "r");
@@ -158,6 +157,7 @@ int main()
         }
     }
     fclose(fp);
+    #endif
 
 
     while(1)
@@ -201,6 +201,7 @@ int main()
             nk_label(ctx, "font path", NK_TEXT_LEFT);
             nk_edit_string(ctx, NK_EDIT_SIMPLE, popping_dikr_dikr_font_path, &popping_dikr_dikr_font_path_length, sizeof(popping_dikr_dikr_font_path), nk_filter_default);
 
+            #ifdef SUPPORTED_PLATFORM_TO_SCAN_SYSTEM_FONTS
             static int show_font = 0;
             nk_layout_row_dynamic(ctx, 0, 1);
             nk_checkbox_label(ctx, "show fonts list", &show_font);
@@ -223,6 +224,7 @@ int main()
                     nk_group_end(ctx);
                 }
             }
+            #endif
 
             //background color
             nk_layout_row_static(ctx, 25, 200, 2);
