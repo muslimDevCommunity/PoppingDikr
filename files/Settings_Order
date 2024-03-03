@@ -1,8 +1,0 @@
-BismiAllah:
-
-int cooldown_minutes //minutes
-SDL_Color bg_color{..., ..., ...}
-SDL_Color Dikr_color{..., ..., ...}
-//not yet emplemented
-Dikr_font_path
-
