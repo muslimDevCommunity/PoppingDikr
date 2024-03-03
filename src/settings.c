@@ -120,6 +120,45 @@ int main()
         background_color.b = (float)popping_dikr_window_background_color.b / 255.0f;
         background_color.a = 1.0f;
     }
+    
+    static char *buffer = NULL;                                 //buffer to hold the files read
+    static char **font_path_array = NULL;                       //array of null terminated paths
+    static int font_count = 1;                                  //number of fonts
+
+    if(NULL != buffer)
+    {
+        free(buffer);
+        free(font_path_array);
+        font_count = 1;
+    }
+    
+    system("fc-list > /tmp/fc-list_scan");
+    int file_size;
+    FILE *fp = fopen("/tmp/fc-list_scan", "r");
+    fseek(fp, 0, SEEK_END);
+    file_size = ftell(fp);
+    buffer = (char*)malloc(file_size);
+    rewind(fp);
+    font_path_array = malloc(sizeof(char**));
+    font_path_array[0] = buffer;
+    for(int i = 0; i < file_size; i++)
+    {
+        char c;
+        if(EOF == (c = fgetc(fp))){break;}
+            buffer[i] = c;
+        if('\n' == c)
+        {
+            font_count += 1;
+            font_path_array = realloc(font_path_array, font_count * sizeof(char**));
+            font_path_array[font_count - 1] = (char*)(buffer + i + 1);
+        }
+        else if(':' == c)
+        {
+            buffer[i] = '\0';
+        }
+    }
+    fclose(fp);
+
 
     while(1)
     {
@@ -161,67 +200,29 @@ int main()
             nk_layout_row_dynamic(ctx, 30, 2);
             nk_label(ctx, "font path", NK_TEXT_LEFT);
             nk_edit_string(ctx, NK_EDIT_SIMPLE, popping_dikr_dikr_font_path, &popping_dikr_dikr_font_path_length, sizeof(popping_dikr_dikr_font_path), nk_filter_default);
-            //in the name of Allah
-            //gallerie
-            nk_layout_row_dynamic(ctx, 30, 1);
-            static int show_gallery = 0;
-            /*
-            static int font_path_count; //size of {fonts_path_array}
-            static **char fonts_path_array;
-            */
+
+            static int show_font = 0;
+            nk_layout_row_dynamic(ctx, 0, 1);
+            nk_checkbox_label(ctx, "show fonts list", &show_font);
+
+            if(show_font)
             {
-                static char *buffer = NULL;                                 //buffer to hold the files read
-                static char **font_path_array = NULL;                       //array of null terminated paths
-                static int font_count = 1;                                  //number of fonts
-                if(nk_button_label(ctx, "choose from installed fonts"))
+                nk_layout_row_dynamic(ctx, 300, 1);
+                if(nk_group_begin(ctx, "group fonts", 0))
                 {
-                    show_gallery = 1;
-                    
-                    //if this is second iteration
-                    if(NULL != buffer)
+                    nk_layout_row_dynamic(ctx, 25, 1);
+                    for(int i = 0; i < font_count; i++)
                     {
-                        free(buffer);
-                        free(font_path_array);
-                        font_count = 1;
-                    }
-
-                    system("fc-list > /tmp/fc-list_scan");
-                    int file_size;
-                    FILE *fp = fopen("/tmp/fc-list_scan", "r");
-                    fseek(fp, 0, SEEK_END);
-                    file_size = ftell(fp);
-                    buffer = (char*)malloc(file_size);
-                    rewind(fp);
-
-                    font_path_array = malloc(sizeof(char**));
-                    font_path_array[0] = buffer;
-
-                    for(int i = 0; i < file_size; i++)
-                    {
-                        char c;
-                        if(EOF == (c = fgetc(fp))){break;}
-
-                        buffer[i] = c;
-                        if('\n' == c)
+                        if(nk_button_label(ctx, font_path_array[i]))
                         {
-                            font_count += 1;
-                            font_path_array = realloc(font_path_array, font_count * sizeof(char**));
-                            font_path_array[font_count - 1] = (char*)(buffer + i + 1);
-                        }
-                        else if(':' == c)
-                        {
-                            buffer[i] = '\0';
+                            popping_dikr_dikr_font_path[0] = '\0';
+                            strcat(popping_dikr_dikr_font_path, font_path_array[i]);
+                            popping_dikr_dikr_font_path_length = strlen(popping_dikr_dikr_font_path);
                         }
                     }
-                    fclose(fp);
-                    }
-                }
-                if(show_gallery)
-                {
-                    static int page_number;
+                    nk_group_end(ctx);
                 }
             }
-
 
             //background color
             nk_layout_row_static(ctx, 25, 200, 2);
