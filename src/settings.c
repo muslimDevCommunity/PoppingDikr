@@ -196,12 +196,10 @@ int main()
                     font_path_array = malloc(sizeof(char**));
                     font_path_array[0] = buffer;
 
-                    printf("====================================================================\n");
                     for(int i = 0; i < file_size; i++)
                     {
                         char c;
                         if(EOF == (c = fgetc(fp))){break;}
-                        printf("%c", c);
 
                         buffer[i] = c;
                         if('\n' == c)
@@ -215,12 +213,7 @@ int main()
                             buffer[i] = '\0';
                         }
                     }
-                    printf("====================================================================\n");
                     fclose(fp);
-                    printf("number of fonts == %d\n", font_count);
-                    for(int i = 0; i < font_count; i++)
-                    {
-                        printf("[%d] %s\n", i, font_path_array[i]);
                     }
                 }
                 if(show_gallery)
