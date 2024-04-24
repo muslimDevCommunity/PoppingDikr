@@ -1,0 +1,13 @@
+//بسم الله الرحمن الرحيم
+//la ilaha illa Allah mohammed rassoul Allah
+.{
+    .name = "bismi_allah_sdl",
+    .version = "0.0.1",
+    .dependencies = .{
+        .SDL = .{
+            .url = "https://github.com/IbrahimOuhamou/zsdl/archive/c6f7eaa31fec95825a3a23266088e8900041d8e2.tar.gz",
+            .hash = "12208e23001a3b96fc1f212a1b5ad8e13ac9691f1932bd0d53953bcc151793170b9a",
+        },
+    },
+    .paths = .{},
+}
