@@ -5,8 +5,10 @@
     .version = "0.0.1",
     .dependencies = .{
         .SDL = .{
-            .url = "https://github.com/IbrahimOuhamou/zsdl/archive/c6f7eaa31fec95825a3a23266088e8900041d8e2.tar.gz",
-            .hash = "12208e23001a3b96fc1f212a1b5ad8e13ac9691f1932bd0d53953bcc151793170b9a",
+            //.url = "https://github.com/IbrahimOuhamou/zsdl/archive/c6f7eaa31fec95825a3a23266088e8900041d8e2.tar.gz",
+            //.hash = "12208e23001a3b96fc1f212a1b5ad8e13ac9691f1932bd0d53953bcc151793170b9a",
+            .url = "https://github.com/IbrahimOuhamou/zsdl/archive/4dd9d8aa50885d80544e1c1145eef3a32b5836d1.tar.gz",
+            .hash = "1220553113a339492736111211dc0642208ddbb72b384f2a936c5b335da5414f6138",
         },
     },
     .paths = .{},
