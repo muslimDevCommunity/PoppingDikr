@@ -14,7 +14,9 @@
 #include <limits.h>
 #include <time.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
+
+#undef main
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
