@@ -1,9 +1,2 @@
-subprojects
 zig-cache/
 zig-out/
-build
-bin
-builddir
-.vscode
-.vs
-imgui.ini
