@@ -9,28 +9,37 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const dikr = b.addExecutable(.{
-        .name = "dikr",
-        .target = target,
-        .optimize = optimize,
-    });
+    const dikr = b.addExecutable(.{ .name = "dikr", .target = target, .optimize = optimize });
+    const settings = b.addExecutable(.{ .name = "settings", .target = target, .optimize = optimize });
 
-    dikr.addCSourceFile(.{ .file = std.Build.LazyPath.relative("src/dikr.c") });
+    dikr.addCSourceFile(.{ .file = b.path("src/dikr.c") });
+    settings.addCSourceFile(.{ .file = b.path("src/settings.c") });
     dikr.linkLibC();
+    settings.linkLibC();
 
     if (target.query.isNativeOs() and target.result.isGnu()) {
         dikr.linkSystemLibrary("sdl2");
         dikr.linkSystemLibrary("sdl2_ttf");
+        settings.linkSystemLibrary("sdl2");
+        settings.linkSystemLibrary("sdl2_ttf");
     } else if (target.result.isMinGW()) {
-        dikr.addIncludePath(std.Build.LazyPath.relative("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include/SDL2"));
-        dikr.addIncludePath(std.Build.LazyPath.relative("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include/SDL2"));
+        dikr.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include/SDL2"));
+        dikr.addIncludePath(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include/SDL2"));
+        settings.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include"));
+        settings.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include/SDL2"));
+        settings.addIncludePath(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include/SDL2"));
 
-        dikr.addObjectFile(std.Build.LazyPath.relative("submodules/harfbuzz-win64/libfreetype-6.dll"));
-        dikr.addObjectFile(std.Build.LazyPath.relative("submodules/harfbuzz-win64/libharfbuzz-0.dll"));
-        dikr.addObjectFile(std.Build.LazyPath.relative("submodules/SDL2-2.30.3/x86_64-w64-mingw32/bin/SDL2.dll"));
-        dikr.addObjectFile(std.Build.LazyPath.relative("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/lib/libSDL2_ttf.a"));
+        dikr.addObjectFile(b.path("submodules/harfbuzz-win64/libfreetype-6.dll"));
+        dikr.addObjectFile(b.path("submodules/harfbuzz-win64/libharfbuzz-0.dll"));
+        dikr.addObjectFile(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/bin/SDL2.dll"));
+        dikr.addObjectFile(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/lib/libSDL2_ttf.a"));
+        settings.addObjectFile(b.path("submodules/harfbuzz-win64/libfreetype-6.dll"));
+        settings.addObjectFile(b.path("submodules/harfbuzz-win64/libharfbuzz-0.dll"));
+        settings.addObjectFile(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/bin/SDL2.dll"));
+        settings.addObjectFile(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/lib/libSDL2_ttf.a"));
     }
     b.installArtifact(dikr);
+    b.installArtifact(settings);
 
     const run_cmd = b.addRunArtifact(dikr);
 
