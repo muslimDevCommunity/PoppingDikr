@@ -16,7 +16,6 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
-#undef main
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
