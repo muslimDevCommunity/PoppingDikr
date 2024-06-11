@@ -23,10 +23,14 @@ pub fn build(b: *std.Build) void {
         settings.linkSystemLibrary("sdl2");
         settings.linkSystemLibrary("sdl2_ttf");
     } else if (target.result.isMinGW()) {
-        dikr.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include/SDL2"));
+        dikr.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include"));
         dikr.addIncludePath(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include/SDL2"));
+        dikr.addIncludePath(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include"));
+        dikr.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include/SDL2"));
+
         settings.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include"));
         settings.addIncludePath(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/include/SDL2"));
+        settings.addIncludePath(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include"));
         settings.addIncludePath(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/include/SDL2"));
 
         dikr.addObjectFile(b.path("submodules/harfbuzz-win64/libfreetype-6.dll"));
@@ -37,6 +41,10 @@ pub fn build(b: *std.Build) void {
         settings.addObjectFile(b.path("submodules/harfbuzz-win64/libharfbuzz-0.dll"));
         settings.addObjectFile(b.path("submodules/SDL2-2.30.3/x86_64-w64-mingw32/bin/SDL2.dll"));
         settings.addObjectFile(b.path("submodules/SDL2_ttf-2.22.0/x86_64-w64-mingw32/lib/libSDL2_ttf.a"));
+
+        //hide the console by the will of Allah
+        dikr.subsystem = .Windows;
+        settings.subsystem = .Windows;
     }
     b.installArtifact(dikr);
     b.installArtifact(settings);
