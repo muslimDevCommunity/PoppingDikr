@@ -1,3 +1,6 @@
 zig-cache/
 zig-out/
 .popping-dikr
+bin/
+build/
+.cache/

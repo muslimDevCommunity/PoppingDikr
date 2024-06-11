@@ -1,6 +1,7 @@
 //بسم الله الرحمن الرحيم
 #ifdef _MSC_VER
-#   define SDL_MAIN_HANDLED
+#   undef main
+#   include <windows.h>
 #elif __linux__
 #   include <unistd.h>
 #endif
@@ -9,14 +10,21 @@
 #include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 //no functions by the will of Allah
-
-int main(int argc, char *argv[])
-{
+#ifdef _MSC_VER
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+#else
+int main(int argc, char *argv[]) {
+#endif
     printf("بسم الله الرحمن الرحيم\n");
+
+#if !defined NDEBUG && defined _MSC_VER
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+#endif
 
     int screen_height = 0;
     int screen_width = 0;
@@ -71,10 +79,13 @@ int main(int argc, char *argv[])
     #ifdef __linux__
     {
         char path[256] = "/home/";
-        strcat(path, getlogin());
-        strcat(path, "/.popping-dikr");
-        conf_path[0] = '\0';
-        strcat(conf_path, path);
+        const char *login_str = getlogin();
+        if (login_str != NULL) {
+            strcat(path, login_str);
+            strcat(path, "/.popping-dikr");
+            conf_path[0] = '\0';
+            strcat(conf_path, path);
+        }
     }
     #endif
 
@@ -137,4 +148,3 @@ int main(int argc, char *argv[])
     SDL_Quit();
 
 }
-
