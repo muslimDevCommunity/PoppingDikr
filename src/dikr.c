@@ -1,11 +1,16 @@
 //بسم الله الرحمن الرحيم
+#ifdef _MSC_VER
+#   define SDL_MAIN_HANDLED
+#elif __linux__
+#   include <unistd.h>
+#endif
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
-#undef main
 
 //no functions by the will of Allah
 
