@@ -3,12 +3,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
+#undef main
 
 //no functions by the will of Allah
 
-int main()
+int main(int argc, char *argv[])
 {
     printf("بسم الله الرحمن الرحيم\n");
 
