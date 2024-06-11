@@ -15,7 +15,7 @@
 #include <time.h>
 
 #include <SDL.h>
-
+#include <SDL_ttf.h>
 #undef main
 
 #define NK_INCLUDE_FIXED_TYPES
@@ -99,7 +99,11 @@ int main()
         SDL_Log("error SDL_CreateRenderer %s", SDL_GetError());
         exit(-1);
     }
-
+    if(TTF_Init() == -1)
+    {
+        printf("Error: %s\n", TTF_GetError());
+        return -1;
+    }
 
     struct nk_context *ctx = nk_sdl_init(window, renderer);
     {
@@ -159,6 +163,23 @@ int main()
         }
     }
     fclose(fp);
+    SDL_Texture *font_image_array[font_count];
+    {
+        SDL_Color dikr_font_color = {.r=255, .g=255, .b=255, .a=255};
+        for (int i =0; i<font_count; i++)
+        {
+            TTF_Font *dikr_font = TTF_OpenFont(font_path_array[i], 64);
+            if(NULL == dikr_font)
+            {
+                printf("[SDL_TTF] font is NULL %s\n", TTF_GetError());
+            }
+            SDL_Surface* dikr_surface = TTF_RenderUTF8_Blended(dikr_font, "\uFEEA\uFEE0\uFEDF\uFE8D ﻻإ \uFEEA\uFEDFإ ﻻ", dikr_font_color);
+            font_image_array[i] = SDL_CreateTextureFromSurface(renderer, dikr_surface);
+
+            TTF_CloseFont(dikr_font);
+            SDL_FreeSurface(dikr_surface);
+        }
+    }
     #endif
 
 
@@ -213,12 +234,15 @@ int main()
                 nk_layout_row_dynamic(ctx, 300, 1);
                 if(nk_group_begin(ctx, "group fonts", 0))
                 {
-                    nk_layout_row_dynamic(ctx, 25, 1);
+                    //nk_layout_row_dynamic(ctx, 25, 1);
+                    nk_layout_row_static(ctx, popping_dikr_window_height, popping_dikr_window_width, 3);
                     for(int i = 0; i < font_count; i++)
                     {
                         //TODO only show this button if it is a ttf
                         if(NULL == strstr(font_path_array[i], ".ttf")) continue;
-                        if(nk_button_label(ctx, font_path_array[i]))
+                        //if(nk_button_label(ctx, font_path_array[i]))
+                        if(NULL == font_image_array[i]) continue;
+                        if(nk_button_image(ctx, nk_image_ptr(font_image_array[i])))
                         {
                             popping_dikr_dikr_font_path[0] = '\0';
                             strcat(popping_dikr_dikr_font_path, font_path_array[i]);
