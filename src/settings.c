@@ -1,7 +1,9 @@
 //بسم الله الرحمن الرحيم
-
-#ifdef __unix__
-    #include <unistd.h>
+#ifdef _MSC_VER
+#   undef main
+#   include <windows.h>
+#elif __linux__
+#   include <unistd.h>
 #endif
 
 #include <stdio.h>
@@ -16,6 +18,10 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+
+#ifndef _MSC_VER
+    #undef main
+#endif
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -33,8 +39,17 @@
 #define SUPPORTED_PLATFORM_TO_SCAN_SYSTEM_FONTS
 #endif
 
-int main()
-{
+#ifdef _MSC_VER
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+#else
+int main(int argc, char *argv[]) {
+#endif
+
+#if !defined NDEBUG && defined _MSC_VER
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+#endif
+
     //popping_dikr vars
     int popping_dikr_window_width = 400;
     int popping_dikr_window_height = 100;
@@ -55,14 +70,17 @@ int main()
     struct nk_colorf background_color;
     struct nk_colorf font_color;
 
+    //load settings
     #ifdef __linux__
     {
-        //getting the config path
         char path[256] = "/home/";
-        strcat(path, getlogin());
-        strcat(path, "/.popping-dikr");
-        popping_dikr_conf_path[0] = '\0';
-        strcat(popping_dikr_conf_path, path);
+        const char *login_str = getlogin();
+        if (login_str != NULL) {
+            strcat(path, login_str);
+            strcat(path, "/.popping-dikr");
+            popping_dikr_conf_path[0] = '\0';
+            strcat(popping_dikr_conf_path, path);
+        }
     }
     #endif
 

@@ -1,7 +1,6 @@
-subprojects
-build
-bin
-builddir
-.vscode
-.vs
-imgui.ini
+zig-cache/
+zig-out/
+.popping-dikr
+bin/
+build/
+.cache/
