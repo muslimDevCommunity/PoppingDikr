@@ -6,6 +6,7 @@
 #   include <unistd.h>
 #endif
 
+#include <time.h>
 #include <stdio.h>
 #include <string.h>
 #include <SDL2/SDL.h>
@@ -134,9 +135,25 @@ int main(int argc, char *argv[]) {
     SDL_RenderPresent(renderer);
 
     //pop the dikr and hide when it is pressed
-    SDL_Delay(display_seconds * 1000);
+    // SDL_Delay(display_seconds * 1000);
+    {
+        long pop_up_time;
+        pop_up_time = time(NULL);
+
+        while(1) {
+            SDL_Event event;
+            while(SDL_PollEvent(&event)) {
+                if(SDL_QUIT == event.type || event.type == SDL_MOUSEBUTTONDOWN || (event.type == SDL_WINDOWEVENT && ( event.window.type == SDL_WINDOWEVENT_FOCUS_GAINED || event.window.type == SDL_WINDOWEVENT_ENTER))) {
+                    goto cleen_up;
+                }
+            }
+            
+            if(time(NULL) > (pop_up_time + display_seconds)) goto cleen_up;
+        }
+    }
 
     //cleen up
+cleen_up:
     SDL_FreeSurface(dikr_surface);
     SDL_DestroyTexture(dikr_texture);
     SDL_DestroyRenderer(renderer);
