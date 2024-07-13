@@ -1,6 +1,6 @@
 [submodule "submodules/Nuklear"]
 	path = submodules/Nuklear
-	url = git@github.com:Immediate-Mode-UI/Nuklear.git
+	url = ../Immediate-Mode-UI/Nuklear.git
 [submodule "scripts"]
 	path = scripts
 	url = https://github.com/IbrahimHindawi/scripts
