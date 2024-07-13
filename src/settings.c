@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
     popping_dikr_dikr_font_path_length = strlen(popping_dikr_dikr_font_path);
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window *window = SDL_CreateWindow("popping dikr settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 800, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
+    SDL_Window *window = SDL_CreateWindow("popping dikr settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 300, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
     if(NULL == window)
     {
         SDL_Log("error SDL_CreateWindow %s", SDL_GetError());
