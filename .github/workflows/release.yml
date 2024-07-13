@@ -1,0 +1,49 @@
+# بسم الله الرحمن الرحيم
+# la ilaha illa Allah Mohammed Rassoul Allah
+
+# alhamdo li Allah this was made by 'ChatGPT'
+name: Compile, Compress, and Attach to Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Install Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: 0.13.0
+
+      - name: Compile Zig project
+        run: zig build -Dtarget=x86_64-windows --release=safe
+
+      - name: Compress binary and DLL
+        run: zip -j popping-dikr_${{ steps.get_release.outputs.tag_name }}_win64.zip zig-out/bin/* submodules/harfbuzz-win64/*.dll submodules/SDL2-2.30.3/x86_64-w64-mingw32/bin/SDL2.dll
+
+      - name: Upload compressed binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: popping-dikr_${{ steps.get_release.outputs.tag_name }}_win64.zip
+          asset_name: popping-dikr_${{ steps.get_release.outputs.tag_name }}_win64.zip
+          asset_content_type: application/zip
+
