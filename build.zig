@@ -9,8 +9,8 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const dikr = b.addExecutable(.{ .name = "dikr", .target = target, .optimize = optimize });
-    const settings = b.addExecutable(.{ .name = "settings", .target = target, .optimize = optimize });
+    const dikr = b.addExecutable(.{ .name = "popping-dikr", .target = target, .optimize = optimize });
+    const settings = b.addExecutable(.{ .name = "popping-dikr-settings", .target = target, .optimize = optimize });
 
     dikr.addCSourceFile(.{ .file = b.path("src/dikr.c") });
     settings.addCSourceFile(.{ .file = b.path("src/settings.c") });
